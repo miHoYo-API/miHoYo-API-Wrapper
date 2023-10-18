@@ -24,7 +24,7 @@
 
 ```toml
 miHoYo-API = "0.1.1"
-tokio = { version = "1.33.0", features = ["macros"] }
+tokio = { version = "1.33.0", features = ["full"] }
 ```
 
 ```rs
