@@ -17,13 +17,15 @@
 ## Features
 *TBA
 
+
 | Func ＼ Game | Genshin | Honkai | StarRail |
 |:-----------:|:-------:|:------:|:--------:| 
 |    User     |    ✓    |        |    ✓     |
-|  Character  |    ✓    |        |    ✓     |
-|  Challenge  |    ✓    |        |    ✓     |
-|    Rogue    |         |        |    ✓     |
+| Characters  |    ✓    |        |    ✓     |
+| Challenge*1 |         |        |    ✓     |
+|    Notes    |    ✓    |        |    ✓     |
 
+*1 Spiral Abyss/(None)/Challenge
 
 
 ## Requirements
