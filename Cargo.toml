@@ -1,7 +1,14 @@
 [package]
-name = "miHoYo-API"
-version = "0.1.0"
+authors = [ "Ennui.lw" ]
 edition = "2021"
+description = "A API-Wrapper of miHoYo games in Rust"
+keywords = [ "mihoyo", "genshin", "starrail" ]
+license = "MIT"
+name = "miHoYo-API"
+repository = "https://github.com/wuliao97/miHoYoAPI-Wrapper"
+version = "0.1.1"
+
+
 
 [features]
 default = ["genshin", "honkai", "starrail"]
