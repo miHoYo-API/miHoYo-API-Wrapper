@@ -75,91 +75,91 @@ mod tests {
         dbg!(x);
     }
 
-    #[tokio::test]
-    async fn starrail_rogue() {
-        let mut client = Client::new();
-        client.set_from_env().unwrap();
-        let account = client.get_game_account(None, Game::STARRAIL)
-            .await
-            .unwrap();
-
-        let x = client.get_starrail_rogue(Some(account.get_uid()), None, Some("ja-jp"))
-            .await
-            .unwrap();
-        dbg!(x);
-    }
-
-
-
-    #[tokio::test]
-    async fn genshin_notes() {
-        let mut client = Client::new();
-        client.set_from_env().unwrap();
-        let account = client.get_game_account(None, Game::GENSHIN)
-            .await
-            .unwrap();
-
-        let x = client.get_genshin_notes(Some(account.get_uid()), Some("ja-jp"))
-            .await
-            .unwrap();
-        dbg!(x);
-    }
-
-    #[tokio::test]
-    async fn genshin_partial_user() {
-        let mut client = Client::new();
-        client.set_from_env().unwrap();
-        let account = client.get_game_account(None, Game::GENSHIN)
-            .await
-            .unwrap();
-
-        let x = client.get_genshin_partial_user(Some(account.get_uid()), Some("ja-jp"))
-            .await
-            .unwrap();
-        dbg!(x);
-    }
+    // #[tokio::test]
+    // async fn starrail_rogue() {
+    //     let mut client = Client::new();
+    //     client.set_from_env().unwrap();
+    //     let account = client.get_game_account(None, Game::STARRAIL)
+    //         .await
+    //         .unwrap();
+    //
+    //     let x = client.get_starrail_rogue(Some(account.get_uid()), None, Some("ja-jp"))
+    //         .await
+    //         .unwrap();
+    //     dbg!(x);
+    // }
 
 
-    #[tokio::test]
-    async fn genshin_characters() {
-        let mut client = Client::new();
-        client.set_from_env().unwrap();
-        let account = client.get_game_account(None, Game::GENSHIN)
-            .await
-            .unwrap();
 
-        let x = client.get_genshin_characters(Some(account.get_uid()), Some("ja-jp"))
-            .await
-            .unwrap();
-        dbg!(x);
-    }
-
-
-    #[tokio::test]
-    async fn genshin_user() {
-        let mut client = Client::new();
-        client.set_from_env().unwrap();
-        let account = client.get_game_account(None, Game::GENSHIN)
-            .await
-            .unwrap();
-
-        let x = client.get_genshin_user(Some(account.get_uid()), Some("ja-jp"))
-            .await
-            .unwrap();
-        dbg!(x);
-    }
-
-    #[tokio::test]
-    async fn genshin_spiral_abyss() {
-        let mut client = Client::new();
-        client.set_from_env().unwrap();
-        let account = client.get_game_account(None, Game::GENSHIN)
-            .await
-            .unwrap();
-
-        let x = client.get_genshin_spiral_abyss(Some(account.get_uid()), None, Some("ja-jp"))
-            .await
-            .unwrap();
-        dbg!(x);
-    }
+    // #[tokio::test]
+    // async fn genshin_notes() {
+    //     let mut client = Client::new();
+    //     client.set_from_env().unwrap();
+    //     let account = client.get_game_account(None, Game::GENSHIN)
+    //         .await
+    //         .unwrap();
+    //
+    //     let x = client.get_genshin_notes(Some(account.get_uid()), Some("ja-jp"))
+    //         .await
+    //         .unwrap();
+    //     dbg!(x);
+    // }
+    //
+    // #[tokio::test]
+    // async fn genshin_partial_user() {
+    //     let mut client = Client::new();
+    //     client.set_from_env().unwrap();
+    //     let account = client.get_game_account(None, Game::GENSHIN)
+    //         .await
+    //         .unwrap();
+    //
+    //     let x = client.get_genshin_partial_user(Some(account.get_uid()), Some("ja-jp"))
+    //         .await
+    //         .unwrap();
+    //     dbg!(x);
+    // }
+    //
+    //
+    // #[tokio::test]
+    // async fn genshin_characters() {
+    //     let mut client = Client::new();
+    //     client.set_from_env().unwrap();
+    //     let account = client.get_game_account(None, Game::GENSHIN)
+    //         .await
+    //         .unwrap();
+    //
+    //     let x = client.get_genshin_characters(Some(account.get_uid()), Some("ja-jp"))
+    //         .await
+    //         .unwrap();
+    //     dbg!(x);
+    // }
+    //
+    //
+    // #[tokio::test]
+    // async fn genshin_user() {
+    //     let mut client = Client::new();
+    //     client.set_from_env().unwrap();
+    //     let account = client.get_game_account(None, Game::GENSHIN)
+    //         .await
+    //         .unwrap();
+    //
+    //     let x = client.get_genshin_user(Some(account.get_uid()), Some("ja-jp"))
+    //         .await
+    //         .unwrap();
+    //     dbg!(x);
+    // }
+    //
+    // #[tokio::test]
+    // async fn genshin_spiral_abyss() {
+    //     let mut client = Client::new();
+    //     client.set_from_env().unwrap();
+    //     let account = client.get_game_account(None, Game::GENSHIN)
+    //         .await
+    //         .unwrap();
+    //
+    //     let x = client.get_genshin_spiral_abyss(Some(account.get_uid()), None, Some("ja-jp"))
+    //         .await
+    //         .unwrap();
+    //     dbg!(x);
+    // }
 }

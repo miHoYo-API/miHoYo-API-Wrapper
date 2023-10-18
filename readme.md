@@ -1,6 +1,6 @@
 <h1 align="center">miHoYo API-Wrapper</h1>
 
-<p align="right">version. 0.1.0</p>
+<p align="right">version. 0.1.3</p>
 
 
 ## Original
@@ -23,26 +23,10 @@
 ## Requirements
 
 ```toml
-[dependencies]
-async-trait = "0.1.72"
-anyhow = "1.0.72"
-dotenv = "0.15.0"
-once_cell = "1.18.0"
-serde = { version = "1.0.182", features = ["derive"] }
-serde_json = "1.0.104"
-rand = "0.8.5"
-rust-crypto = "0.2.36"
+miHoYo-API = "0.1.1"
+tokio = { version = "1.33.0", features = ["macros"] }
+```
 
-[dependencies.reqwest]
-version = "0.11.7"
-features = [
-    "json",
-    "multipart",
-    "stream",
-    "cookies"
-]
+```rs
 
-[dependencies.tokio]
-version = "1.33"
-features = ["full"]
 ```

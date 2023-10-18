@@ -12,7 +12,8 @@ pub struct Challenge {
     pub battle_num: u8,
     pub has_data: bool,
     pub max_floor_detail: serde_json::Value,
-    pub all_floor_detail: Vec<FloorDetail>
+    pub all_floor_detail: Vec<FloorDetail>,
+    pub max_floor_id: u32,
 }
 
 #[derive(Debug, Deserialize)]
@@ -22,7 +23,6 @@ pub struct FloorDetail {
     pub star_num: u8,
     pub node_1: Node,
     pub node_2: Node,
-    pub max_floor_id: u32,
 }
 
 #[derive(Debug, Deserialize)]
