@@ -6,7 +6,6 @@
     <img alt="Crates.io (version)" src="https://img.shields.io/crates/dv/miHoYo-API/0.1.5">
     <br>
     <img alt="Discord" src="https://img.shields.io/discord/1058271208442953728?color=9001F5">
-    <img alt="Discord" src="https://img.shields.io/discord/1058271208442953728?color=9001F5">
 </div>
 
 
