@@ -1,8 +1,14 @@
-<h1 align="center">miHoYo API-Wrapper</h1>
+<div align="center">
+    <img src="https://i.imgur.com/pYG0dpf.png">
+    <img alt="Crates.io" src="https://img.shields.io/crates/d/miHoYo-API">
+    <img alt="Crates.io (latest)" src="https://img.shields.io/crates/dv/miHoYo-API">
+    <img alt="Crates.io (recent)" src="https://img.shields.io/crates/dr/miHoYo-API">
+    <img alt="Crates.io (version)" src="https://img.shields.io/crates/dv/miHoYo-API/0.1.5">
+    <br>
+    <img alt="Discord" src="https://img.shields.io/discord/1058271208442953728?color=9001F5">
+    <img alt="Discord" src="https://img.shields.io/discord/1058271208442953728?color=9001F5">
+</div>
 
-
-## ~~Now we got FATAL ERROR~~
-Probably Its done. 
 
 ## Original
 
@@ -24,11 +30,11 @@ Probably Its done.
 ## Requirements
 
 ```toml
-miHoYo-API = "0.1.1"
+miHoYo-API = "0.1.5"
 tokio = { version = "1.33.0", features = ["full"] }
 ```
 
-```rs
+```rust
 use miHoYo_API::client::Client;
 use miHoYo_API::types::Game;
 
