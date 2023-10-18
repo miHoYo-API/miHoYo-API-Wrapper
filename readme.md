@@ -1,5 +1,9 @@
 <h1 align="center">miHoYo API-Wrapper</h1>
 
+
+# Now we got FATAL ERROR
+please wait for done...
+
 ## Original
 
 [genshin.py](https://github.com/thesadru/genshin.py) by [thesadru](https://github.com/thesadru)
