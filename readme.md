@@ -1,7 +1,5 @@
 <h1 align="center">miHoYo API-Wrapper</h1>
 
----
-
 <p align="right">version. 0.1.0</p>
 
 
@@ -11,15 +9,14 @@
 
  
 ## Features
+*TBA
 
 | Func ＼ Game | Genshin | Honkai | StarRail |
 |:-----------:|:-------:|:------:|:--------:| 
-|    User     |   [x]   |        |   [x]    |
-|  Character  |   [x]   |        |   [x]    |
-|  Challenge  |   [ ]   |        |   [x]    |
-|    User     |         |        |          |
-|    Rogue    |         |        |   [x]    |
-
+|    User     |    ✓    |        |    ✓     |
+|  Character  |    ✓    |        |    ✓     |
+|  Challenge  |    ✓    |        |    ✓     |
+|    Rogue    |         |        |    ✓     |
 
 
 
@@ -49,4 +46,3 @@ features = [
 version = "1.33"
 features = ["full"]
 ```
-
