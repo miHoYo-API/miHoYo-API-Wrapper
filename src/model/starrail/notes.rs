@@ -11,7 +11,7 @@ pub struct StarRailNote {
     pub stamina_recover_time: u64,
     pub accepted_epedition_num: u32,
     pub total_expedition_num: u32,
-    pub expeditions: Vec<Expedition>,
+    pub expeditions: Option<Vec<Expedition>>,
     pub current_train_score: u32,
     pub max_train_score: u32,
     pub current_rogue_score: u32,
