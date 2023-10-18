@@ -14,13 +14,12 @@
 
 | Func ＼ Game | Genshin | Honkai | StarRail |
 |:-----------:|:-------:|:------:|:--------:| 
-|    User     |   [x]   |  [ ]   |   [x]    |
-|  Character  |   [x]   |  [ ]   |   [x]    |
-|  Challenge  |   [ ]   |  [ ]   |   [x]    |
-|    User     |         |  [ ]   |          |
-|    Rogue    |         |  [ ]   |   [x]    |
-|    User     |         |  [ ]   |          |
-|    User     |         |  [ ]   |          |
+|    User     |   [x]   |        |   [x]    |
+|  Character  |   [x]   |        |   [x]    |
+|  Challenge  |   [ ]   |        |   [x]    |
+|    User     |         |        |          |
+|    Rogue    |         |        |   [x]    |
+
 
 
 
@@ -51,4 +50,3 @@ version = "1.33"
 features = ["full"]
 ```
 
-## Example Code
