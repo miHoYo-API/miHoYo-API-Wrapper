@@ -1,8 +1,5 @@
 <h1 align="center">miHoYo API-Wrapper</h1>
 
-<p align="right">version. 0.1.3</p>
-
-
 ## Original
 
 [genshin.py](https://github.com/thesadru/genshin.py) by [thesadru](https://github.com/thesadru)
