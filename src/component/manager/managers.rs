@@ -3,7 +3,6 @@ use crate::types::{
     CookieOrHeader,
 };
 
-
 //  I will WRITE someday
 // pub(crate) fn parse_cookie<'a>(cookie: Option<CookieOrHeader>) -> NaturalDict<'a> {
 //     let mut cookies = NaturalDict::new();
@@ -38,7 +37,7 @@ use crate::types::{
 // }
 
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub(crate) struct BaseCookieManager {
     cookies: Option<CookieOrHeader>
 }
@@ -53,18 +52,21 @@ impl BaseCookieManager {
             return BaseCookieManager { cookies: None };
         }
 
-        match cookies.unwrap() {
+        return match cookies.unwrap() {
             AnyCookieOrHeader::CookieOrHeader(any_cookie) => {
-                return match any_cookie {
-                    CookieOrHeader::Dict(dict) => {
-                        BaseCookieManager::new(Some(CookieOrHeader::Dict(dict)))
+                match any_cookie {
+                    CookieOrHeader::Dict(dict) => BaseCookieManager::new(Some(CookieOrHeader::Dict(dict))),
+                    CookieOrHeader::Str(str) => BaseCookieManager::new(Some(CookieOrHeader::Str(str))),
+                }
+            }
+            AnyCookieOrHeader::SequenceCookieOrHeader(any_cookie) => {
+                match any_cookie {
+                    Vec { .. } => {
+                        BaseCookieManager::new(None)
                     }
                 }
             }
-            _ => {
-            }
         }
-        BaseCookieManager::new(None)
     }
 
     pub(crate) fn forming_cookie(&self) -> (String, String) {

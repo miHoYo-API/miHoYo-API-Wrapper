@@ -1,6 +1,5 @@
 use serde::Deserialize;
 
-
 #[derive(Debug, Deserialize)]
 pub struct SpiralAbyss {
     pub schedule_id: u32,

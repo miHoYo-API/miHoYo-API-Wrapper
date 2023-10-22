@@ -1,7 +1,5 @@
 use serde::Deserialize;
 
-
-
 #[derive(Debug, Deserialize)]
 pub struct ScheduleTime {
     #[serde(rename = "Day")]

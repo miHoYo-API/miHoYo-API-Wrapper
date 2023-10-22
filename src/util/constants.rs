@@ -1,8 +1,9 @@
 use std::collections::HashMap;
-use once_cell::sync::Lazy;
-use crate::component::routes::{GameRoute, GameTrait, InternationalRoute, InternationalTrait, Route, RouteTrait};
-use crate::types::{Region, Game::{self, GENSHIN, HONKAI, STARRAIL}};
 
+use once_cell::sync::Lazy;
+
+use crate::component::routes::{GameRoute, GameTrait, InternationalRoute, InternationalTrait, Route, RouteTrait};
+use crate::types::{Game::{self, GENSHIN, HONKAI, STARRAIL}, Region};
 
 pub(crate) static DS_SALT: Lazy<HashMap<Region,
  &'static str>> = Lazy::new(|| {

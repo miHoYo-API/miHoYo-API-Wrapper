@@ -1,25 +1,27 @@
-use std::sync::Arc;
 use std::collections::HashMap;
+use std::sync::Arc;
+
 use anyhow::{bail, Result};
+use reqwest::{Response, Url};
 use reqwest::cookie::{CookieStore, Jar};
 use reqwest::header::{COOKIE, HeaderMap};
-use reqwest::{Response, Url};
 use serde_json::Value;
+
 use crate::component::cache::Cache;
 use crate::component::manager::managers::BaseCookieManager;
 use crate::component::routes::InternationalTrait;
 use crate::model::hoyolab::record::{RecordCard, RecordCardList};
 use crate::model::ModelBase;
-use crate::util::constants::*;
 use crate::types::{AnyCookieOrHeader, Game, Region};
-use crate::util::kwargs::Kwargs;
 use crate::types::StringDict;
+use crate::util::constants::*;
 use crate::util::kwargs::get_ds_headers;
+use crate::util::kwargs::Kwargs;
 
 type Uid = HashMap<Game, u32>;
 //   ^ ?
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub(crate) struct InnerClient<'a> {
     pub(crate) cookie_manager: Option<BaseCookieManager>,
     pub(crate) authkey: Option<&'a str>,
@@ -29,7 +31,7 @@ pub(crate) struct InnerClient<'a> {
     pub(crate) game: Option<Game>,
     pub(crate) uid: Option<Uid>,
     pub(crate) hoyolab_id: Option<u32>,
-    pub(crate) cache: Option<Cache>,
+    // pub(crate) cache: Option<Cache>,
     pub(crate) debug: bool,
 }
 
@@ -45,7 +47,7 @@ impl<'a> Default for InnerClient<'a> {
             game: None,
             uid: None,
             hoyolab_id: None,
-            cache: None,
+            // cache: None,
             debug: true,
         }
     }
@@ -53,7 +55,7 @@ impl<'a> Default for InnerClient<'a> {
 
 
 impl<'a> InnerClient<'a> {
-    pub(crate) fn new(cookies: Option<AnyCookieOrHeader>, authkey: Option<&'a str>, lang: &'a str, region: Region, proxy: Option<&'a str>, game: Option<Game>, uid: Option<Uid>, hoyolab_id: Option<u32>, cache: Option<Cache>, debug: bool) -> InnerClient<'a> {
+    pub(crate) fn new(cookies: Option<AnyCookieOrHeader>, authkey: Option<&'a str>, lang: &'a str, region: Region, proxy: Option<&'a str>, game: Option<Game>, uid: Option<Uid>, hoyolab_id: Option<u32>, _cache: Option<Cache>, debug: bool) -> InnerClient<'a> {
         let cookie_manager = Some(BaseCookieManager::from_cookies(cookies));
         InnerClient {
             cookie_manager,
@@ -64,7 +66,7 @@ impl<'a> InnerClient<'a> {
             game,
             uid,
             hoyolab_id,
-            cache,
+            // cache,
             debug,
         }
     }
@@ -179,7 +181,7 @@ impl<'a> InnerClient<'a> {
         // ensure!(lang.is_none(),"lang were None");
         // let lang = lang.unwrap_or(self.lang.clone());
         let region = region.unwrap_or(self.get_region().unwrap());
-        let url = if url.contains("https://") {
+        let url = if url.starts_with("https://") {
             url.to_string()
         } else {
             format!("{}{}", TAKUMI_URL.get_url(region).unwrap(), url)

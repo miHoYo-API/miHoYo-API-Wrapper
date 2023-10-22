@@ -1,14 +1,14 @@
 use reqwest::Response;
+
 use crate::component::client::base::InnerClient;
 use crate::component::client::chronicle::client::Chronicle;
-use crate::model::ModelBase;
 use crate::model::genshin;
+use crate::model::ModelBase;
 use crate::types::Game;
 use crate::util::kwargs::Kwargs;
 use crate::util::uid::{recognize_genshin_server, recognize_region};
 
-
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub(crate) struct GenshinClient(pub(crate) InnerClient<'static>);
 
 

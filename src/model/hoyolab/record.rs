@@ -1,6 +1,6 @@
 use serde::Deserialize;
-use crate::types::{Region, Game};
 
+use crate::types::Game;
 
 #[derive(Debug,
  Deserialize)]

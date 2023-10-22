@@ -1,7 +1,6 @@
 // use std::time::Duration;
 use serde::Deserialize;
 
-
 #[derive(Debug, Deserialize)]
 pub struct Challenge {
     pub schedule_id: u32,

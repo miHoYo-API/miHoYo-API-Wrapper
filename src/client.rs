@@ -1,24 +1,23 @@
 use anyhow::bail;
+
 use crate::component::client::base::InnerClient;
 use crate::component::client::chronicle::client::Chronicle;
-use crate::component::manager::managers::BaseCookieManager;
-use crate::util::kwargs::Kwargs;
-use crate::types::{AnyCookieOrHeader, CookieOrHeader, Game, StringDict};
-
-use crate::model::{ModelBase, genshin, honkai, starrail};
-use crate::model::hoyolab::record::{Account, AccountList, RecordCard};
-
-
 #[cfg(feature = "genshin")]
 use crate::component::client::chronicle::genshin::GenshinClient;
 #[cfg(feature = "honkai")]
 use crate::component::client::chronicle::honkai::HonkaiClient;
 #[cfg(feature = "starrail")]
 use crate::component::client::chronicle::starrail::StarRailClient;
+use crate::component::manager::managers::BaseCookieManager;
+#[allow(unused)]
+use crate::model::{genshin, honkai, ModelBase, starrail};
 use crate::model::genshin::stats::UserWithCharacters;
+use crate::model::hoyolab::record::{Account, AccountList, RecordCard};
+use crate::types::{AnyCookieOrHeader, CookieOrHeader, Game, StringDict};
+use crate::util::kwargs::Kwargs;
 
-
-#[derive(Debug)]
+/// A Client which can
+#[derive(Debug, Clone)]
 pub struct Client<'a> {
     pub(crate) client: InnerClient<'a>,
     #[cfg(feature = "genshin")]
@@ -29,9 +28,8 @@ pub struct Client<'a> {
     pub(crate) starrail: Chronicle<StarRailClient>
 }
 
-
-impl Client<'_> {
-    pub fn new() -> Self {
+impl<'a> Default for Client<'a> {
+    fn default() -> Self {
         Self {
             client: InnerClient::default(),
             #[cfg(feature = "genshin")]
@@ -42,22 +40,14 @@ impl Client<'_> {
             starrail: Chronicle::<StarRailClient>::new(),
         }
     }
+}
 
-    #[deprecated = "I will implements this method."]
-    pub fn set_cookies(&mut self) {
-        // self.base_client.cookies = Some();
-    }
-
-    pub fn set_from_env<'a>(&mut self) -> anyhow::Result<()> {
-        use std::env;
-
-        if let Err(why) = dotenv::dotenv() {
-            bail!("Unable find .env file: {}", why);
-        };
-
+impl Client<'_> {
+    /// To Connect with HTTP(S) so need setting Cookies
+    pub fn set_cookies<T: ToString>(&mut self, ltuid: T, ltoken: T) -> anyhow::Result<Self> {
         let mut dict = StringDict::new();
-        dict.insert(String::from("ltuid"), env::var("ltuid").unwrap());
-        dict.insert(String::from("ltoken"), env::var("ltoken").unwrap());
+        dict.insert(String::from("ltuid"), ltuid.to_string());
+        dict.insert(String::from("ltoken"), ltoken.to_string());
 
         self.client.cookie_manager = Some(BaseCookieManager::from_cookies(
             Some(AnyCookieOrHeader::CookieOrHeader(CookieOrHeader::Dict(dict.clone())))
@@ -71,7 +61,7 @@ impl Client<'_> {
         }
 
         #[cfg(feature = "honkai")]
-        {   
+        {
             self.honkai.0.0.cookie_manager = Some(BaseCookieManager::from_cookies(
                 Some(AnyCookieOrHeader::CookieOrHeader(CookieOrHeader::Dict(dict.clone())))
             ));
@@ -83,11 +73,28 @@ impl Client<'_> {
                 Some(AnyCookieOrHeader::CookieOrHeader(CookieOrHeader::Dict(dict.clone())))
             ));
         }
-            
-        Ok(())
+
+        Ok(self.clone())
     }
 
+    /// setting cookies from .env file.
+    pub fn set_from_env<'a>(&mut self) -> anyhow::Result<Self> {
+        use std::env;
 
+        if let Err(why) = dotenv::dotenv() {
+            bail!("Unable find .env file: {}", why);
+        };
+
+        self.set_cookies(
+            env::var("ltuid").unwrap(),
+            env::var("ltoken").unwrap()
+        )
+    }
+
+    /// Get the accounts that miHoYo game as listed in `Vec`
+    /// - _Genshin_
+    /// - _Honkai 3rd_
+    /// - _StarRail_
     pub async fn get_game_accounts(&self, lang: Option<&str>) -> anyhow::Result<Vec<Account>> {
         let result = self.client.request_hoyolab(
             "binding/api/getUserGameRolesByCookie",
@@ -102,15 +109,16 @@ impl Client<'_> {
         Ok(account_data.data.list)
     }
 
-    pub async fn get_game_account(&self, lang: Option<&str>, game: Game) -> anyhow::Result<Account> {
+
+    /// You can set the Game you want
+    pub async fn get_game_account(&self, lang: Option<&str>, game: Game) -> Option<Account> {
         let result = self.get_game_accounts(lang)
             .await
             .unwrap();
-        let extracted_data = result
+        result
             .into_iter()
             .filter(|account| account.which_game() == game)
-            .next();
-        Ok(extracted_data.unwrap())
+            .next()
     }
 
     pub async fn get_record_cards(&self, hoyolab_id: Option<u32>, lang: Option<&str>) -> anyhow::Result<Vec<RecordCard>> {
@@ -157,7 +165,7 @@ impl Client<'_> {
     #[deprecated = "It so annoying to write A model for Deserialize. Its killed me."]
     #[cfg(feature = "genshin")]
     pub async fn get_genshin_activities(&self, uid: Option<u32>, lang: Option<&str>) -> anyhow::Result<()> {
-        let result = self.genshin.0.get_activities(uid, lang)
+        let _result = self.genshin.0.get_activities(uid, lang)
             .await
             .unwrap();
         Ok(())

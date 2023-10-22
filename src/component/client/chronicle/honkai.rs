@@ -1,14 +1,13 @@
 use reqwest::Response;
+
 use crate::component::client::base::InnerClient;
 use crate::component::client::chronicle::client::Chronicle;
 use crate::types;
 use crate::types::Game;
 use crate::util::kwargs::Kwargs;
-use crate::util::uid::{recognize_genshin_server, recognize_honkai_server, recognize_region};
+use crate::util::uid::recognize_honkai_server;
 
-
-
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub(crate) struct HonkaiClient(pub(crate) InnerClient<'static>);
 
 

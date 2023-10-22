@@ -1,4 +1,4 @@
-pub mod client;
-pub mod genshin;
-pub mod honkai;
-pub mod starrail;
+pub(crate) mod client;
+pub(crate) mod genshin;
+pub(crate) mod honkai;
+pub(crate) mod starrail;

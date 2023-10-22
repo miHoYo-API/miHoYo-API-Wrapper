@@ -4,16 +4,16 @@ edition = "2021"
 description = "A API-Wrapper of miHoYo games in Rust"
 keywords = [ "mihoyo", "hoyoverse", "genshin", "starrail" ]
 license = "MIT"
-name = "miHoYo-API"
+name = "mihoyo-API"
 repository = "https://github.com/wuliao97/miHoYoAPI-Wrapper"
-version = "0.1.6"
+version = "0.1.7"
 
 [features]
-default = ["genshin", "honkai", "starrail"]
+default = ["genshin", "starrail"]
 genshin = []
 honkai = []
 starrail = []
-
+full = ["genshin", "honkai", "starrail"]
 
 [dependencies]
 async-trait = "0.1.72"

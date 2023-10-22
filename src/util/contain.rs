@@ -1,10 +1,8 @@
 use std::collections::HashMap;
+
 use once_cell::sync::Lazy;
 
-
-
-pub(crate) static LANGUAGES: Lazy<HashMap<&'static str,
- &'static str>> = Lazy::new(||
+pub(crate) static LANGUAGES: Lazy<HashMap<&'static str, &'static str>> = Lazy::new(||
      HashMap::from(
        [
          ("zh-cn", "简体中文"),

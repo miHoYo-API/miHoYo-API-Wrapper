@@ -1,15 +1,14 @@
 use reqwest::Response;
-use serde_json::json;
+
 use crate::component::client::base::InnerClient;
 use crate::component::client::chronicle::client::Chronicle;
 use crate::model::ModelBase;
 use crate::model::starrail;
-use crate::util::kwargs::Kwargs;
 use crate::types::Game;
+use crate::util::kwargs::Kwargs;
 use crate::util::uid::{recognize_region, recognize_starrail_server};
 
-
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub(crate) struct StarRailClient(pub(crate) InnerClient<'static>);
 
 

@@ -1,8 +1,8 @@
 use std::collections::HashMap;
+
 use serde::Deserialize;
+
 use crate::model::genshin::base::ScheduleTime;
-
-
 
 #[derive(Debug, Deserialize)]
 pub struct GenshinNote {

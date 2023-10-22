@@ -15,50 +15,49 @@
 
  
 ## Features
+
 *TBA
 
+|              | Genshin | Honkai | StarRail |
+|:------------:|:-------:|:------:|:--------:| 
+|     User     |    ✓    |        |    ✓     |
+|  Characters  |    ✓    |        |    ✓     |
+| Characters*1 |         |        |          |
+| Challenge*2  |         |        |    ✓     |
+|    Notes     |    ✓    |        |    ✓     |
 
-| Func ＼ Game | Genshin | Honkai | StarRail |
-|:-----------:|:-------:|:------:|:--------:| 
-|    User     |    ✓    |        |    ✓     |
-| Characters  |    ✓    |        |    ✓     |
-| Challenge*1 |         |        |    ✓     |
-|    Notes    |    ✓    |        |    ✓     |
-
-*1 Spiral Abyss/(None)/Challenge
+- *1 Game Characters on Preview
+- *2 Spiral Abyss / (None) / Challenge
 
 
-## Requirements
+## How to Use
 
+``Cargo.toml``
 ```toml
-miHoYo-API = "0.1.5"
+miHoYo-API = "0.1"
 tokio = { version = "1.33.0", features = ["full"] }
 ```
 
+``main.rs``
 ```rust
-use miHoYo_API::client::Client;
-use miHoYo_API::types::Game;
 
-#[tokio::main]
-async fn main() {
-    let mut client = Client::new();
-    client.set_from_env().unwrap();
-
-    let starrail = client.get_game_account(Some("ja-jp"),Game::STARRAIL).await.unwrap();
-    let genshin = client.get_game_account(Some("ja-jp"),Game::GENSHIN).await.unwrap();
-
-    let starrail_note = client.get_starrail_notes(Some(starrail.get_uid()), Some("ja-jp"))
-        .await
-        .unwrap();
-    dbg!(starrail_note);
-
-    let starrail_stats = client.get_starrail_user(Some(starrail.get_uid()), Some("ja-jp"))
-        .await
-        .unwrap();
-    dbg!(starrail_stats);
-
-    let genshin_spiral = client.get_genshin_spiral_abyss(Some(genshin.get_uid()), None, Some("ja-jp"))
-        .await.unwrap();
-    dbg!(genshin_spiral);
-}
 ```
+*TBA
+
+
+## TODO
+|                | Genshin | Honkai | StarRail |
+|:--------------:|:-------:|:------:|:--------:| 
+|    preview     |         |        |          |
+|  Calc Relics   |         |        |          |
+| ExpeditionUtil |         |        |          |
+
+
+Last Edit (_20/10/2023_)
+
+
+## FAQ
+
+※idk how to expression so i write in Japanese sry
+
+

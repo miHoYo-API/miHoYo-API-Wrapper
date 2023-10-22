@@ -1,13 +1,14 @@
 use std::any::Any;
 use std::collections::HashMap;
 use std::time::SystemTime;
-use rand::{self, Rng};
-use reqwest::header::{HeaderMap, HeaderValue};
+
 use crypto::digest::Digest;
 use crypto::md5;
+use rand::{self, Rng};
+use reqwest::header::{HeaderMap, HeaderValue};
+
 use crate::types;
 use crate::util::constants::DS_SALT;
-
 
 #[derive(Debug)]
 pub struct Kwargs<'a> {

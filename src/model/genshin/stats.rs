@@ -1,4 +1,5 @@
 use serde::Deserialize;
+
 use crate::model::genshin::character::GenshinCharacter;
 
 #[derive(Debug, Deserialize)]

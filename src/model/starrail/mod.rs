@@ -1,3 +1,5 @@
+//! For Honkai: StarRail
+
 pub mod stats;
 pub mod notes;
 pub mod character;

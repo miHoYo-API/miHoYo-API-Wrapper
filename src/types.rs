@@ -1,3 +1,5 @@
+//! Types
+
 use std::any::Any;
 use std::collections::HashMap;
 
@@ -6,17 +8,16 @@ pub(crate) type StringDict = HashMap<String, String>;
 pub(crate) type GeneralAny = Box<dyn Any + Send + Sync>;
 
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub(crate) enum CookieOrHeader {
-    // "http.cookies.BaseCookie[typing.Any]"  https://github.com/thesadru/genshin.py/blob/de07439215f9390a3c1a5bdbe5ff5902e6608dd7/genshin/client/manager/managers.py#L29
     Dict(StringDict),
-    // Str(&'a str)
+    Str(String),
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub(crate) enum AnyCookieOrHeader {
     CookieOrHeader(CookieOrHeader),
-    // SequenceCookieOrHeader(Vec<CookieOrHeader>)
+    SequenceCookieOrHeader(Vec<CookieOrHeader>)
 }
 
 
