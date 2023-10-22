@@ -4,7 +4,7 @@ edition = "2021"
 description = "A API-Wrapper of miHoYo games in Rust"
 keywords = [ "mihoyo", "hoyoverse", "genshin", "starrail" ]
 license = "MIT"
-name = "mihoyo-API"
+name = "miHoYo-API"
 repository = "https://github.com/wuliao97/miHoYoAPI-Wrapper"
 version = "0.1.7"
 
