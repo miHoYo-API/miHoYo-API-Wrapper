@@ -5,8 +5,7 @@ use once_cell::sync::Lazy;
 use crate::component::routes::{GameRoute, GameTrait, InternationalRoute, InternationalTrait, Route, RouteTrait};
 use crate::types::{Game::{self, GENSHIN, HONKAI, STARRAIL}, Region};
 
-pub(crate) static DS_SALT: Lazy<HashMap<Region,
- &'static str>> = Lazy::new(|| {
+pub(crate) static DS_SALT: Lazy<HashMap<Region, &'static str>> = Lazy::new(|| {
     let mut map = HashMap::new();
     map.insert(Region::OVERSEAS, "6s25p5ox5y14umn1p61aqyyvbvvl3lrt");
     map.insert(Region::CHINESE, "xV8v4Qu54lUKrEYFZkJhB8cuOh9Asafs");

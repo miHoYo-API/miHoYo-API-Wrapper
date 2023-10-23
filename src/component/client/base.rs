@@ -12,7 +12,7 @@ use crate::component::manager::managers::BaseCookieManager;
 use crate::component::routes::InternationalTrait;
 use crate::model::hoyolab::record::{RecordCard, RecordCardList};
 use crate::model::ModelBase;
-use crate::types::{AnyCookieOrHeader, Game, Region};
+use crate::types::{AnyCookieOrHeader, Game, Region, Languages};
 use crate::types::StringDict;
 use crate::util::constants::*;
 use crate::util::kwargs::get_ds_headers;
@@ -24,7 +24,7 @@ type Uid = HashMap<Game, u32>;
 #[derive(Debug, Clone)]
 pub(crate) struct InnerClient<'a> {
     pub(crate) cookie_manager: Option<BaseCookieManager>,
-    pub(crate) authkey: Option<&'a str>,
+    pub(crate) auth_key: Option<&'a str>,
     pub(crate) lang: &'a str,
     pub(crate) region: Region,
     pub(crate) proxy: Option<&'a str>,
@@ -40,7 +40,7 @@ impl<'a> Default for InnerClient<'a> {
     fn default() -> Self {
         InnerClient {
             cookie_manager: None,
-            authkey: None,
+            auth_key: None,
             lang: "en-us",
             region: Region::OVERSEAS,
             proxy: None,
@@ -55,11 +55,11 @@ impl<'a> Default for InnerClient<'a> {
 
 
 impl<'a> InnerClient<'a> {
-    pub(crate) fn new(cookies: Option<AnyCookieOrHeader>, authkey: Option<&'a str>, lang: &'a str, region: Region, proxy: Option<&'a str>, game: Option<Game>, uid: Option<Uid>, hoyolab_id: Option<u32>, _cache: Option<Cache>, debug: bool) -> InnerClient<'a> {
+    pub(crate) fn new(cookies: Option<AnyCookieOrHeader>, auth_key: Option<&'a str>, lang: &'a str, region: Region, proxy: Option<&'a str>, game: Option<Game>, uid: Option<Uid>, hoyolab_id: Option<u32>, _cache: Option<Cache>, debug: bool) -> InnerClient<'a> {
         let cookie_manager = Some(BaseCookieManager::from_cookies(cookies));
         InnerClient {
             cookie_manager,
-            authkey,
+            auth_key,
             lang,
             region,
             proxy,
@@ -170,11 +170,9 @@ impl<'a> InnerClient<'a> {
     pub(crate) async fn request_hoyolab(
         &self,
         url: &str,
-        lang: Option<&str>,
+        lang: Option<Languages>,
         region: Option<Region>,
         method: &str,
-        _params: Option<StringDict>,
-        // data: Option<>,
         headers: Option<HeaderMap>,
         kwargs: Kwargs<'a>,
     ) -> Result<Response> {
@@ -202,7 +200,7 @@ impl<'a> InnerClient<'a> {
     }
 
 
-    pub(crate) async fn request_game_record(&self, endpoint: &str, method: &str, lang: Option<&str>, region: Option<Region>, game: Option<Game>, kwargs: Option<Kwargs<'_>>) -> Result<Response> {
+    pub(crate) async fn request_game_record(&self, endpoint: &str, method: &str, lang: Option<Languages>, region: Option<Region>, game: Option<Game>, kwargs: Option<Kwargs<'_>>) -> Result<Response> {
         let base_url = {
             let mut url = RECORD_URL.get_url(region.unwrap_or(Region::OVERSEAS)).unwrap().to_string();
             if let Some(game) = game {
@@ -212,13 +210,13 @@ impl<'a> InnerClient<'a> {
         };
         let url = format!("{}{}", base_url, endpoint);
         let kwargs = kwargs.unwrap_or_else(|| Kwargs::new());
-        let data = self.request_hoyolab(url.as_str(), lang, region, method, None, None, kwargs)
+        let data = self.request_hoyolab(url.as_str(), lang, region, method, None, kwargs)
             .await
             .unwrap();
         Ok(data)
     }
 
-    pub(crate) async fn get_record_cards(&self, hoyolab_id: Option<u32>, lang: Option<&str>) -> Result<Vec<RecordCard>> {
+    pub(crate) async fn get_record_cards(&self, hoyolab_id: Option<u32>, lang: Option<Languages>) -> Result<Vec<RecordCard>> {
         let hoyolab_id = hoyolab_id.unwrap_or_else(|| self.get_hoyolab_id().unwrap());
         // let cache_key = cache
 

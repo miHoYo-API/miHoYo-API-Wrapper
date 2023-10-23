@@ -4,7 +4,7 @@ use crate::component::client::base::InnerClient;
 use crate::component::client::chronicle::client::Chronicle;
 use crate::model::genshin;
 use crate::model::ModelBase;
-use crate::types::Game;
+use crate::types::{Game, Languages};
 use crate::util::kwargs::Kwargs;
 use crate::util::uid::{recognize_genshin_server, recognize_region};
 
@@ -14,7 +14,7 @@ pub(crate) struct GenshinClient(pub(crate) InnerClient<'static>);
 
 impl GenshinClient {
     async fn inner_get_genshin_record(
-        &self, endpoint: &str, uid: u32, method: Option<&str>, lang: Option<&str>, payload: Option<Kwargs<'static>>, _cache: Option<bool>
+        &self, endpoint: &str, uid: u32, method: Option<&str>, lang: Option<Languages>, payload: Option<Kwargs<'static>>, _cache: Option<bool>
     ) -> anyhow::Result<Response> {
         let mut payload = payload.unwrap_or_else(|| Kwargs::new());
         payload.set("role_id", uid);
@@ -42,7 +42,7 @@ impl GenshinClient {
         Ok(data)
     }
 
-    pub(crate) async fn get_notes(&self, uid: Option<u32>, lang: Option<&str>, auto_auth: Option<bool>) -> anyhow::Result<genshin::notes::GenshinNote> {
+    pub(crate) async fn get_notes(&self, uid: Option<u32>, lang: Option<Languages>) -> anyhow::Result<genshin::notes::GenshinNote> {
         let result = self.inner_get_genshin_record("dailyNote", uid.unwrap(), None, lang, None, None)
             .await
             .unwrap()
@@ -52,7 +52,7 @@ impl GenshinClient {
         Ok(result.data)
     }
 
-    pub(crate) async fn get_partial_user(&self, uid: Option<u32>, lang: Option<&str>) -> anyhow::Result<genshin::stats::PartialUser> {
+    pub(crate) async fn get_partial_user(&self, uid: Option<u32>, lang: Option<Languages>) -> anyhow::Result<genshin::stats::PartialUser> {
         let result = self.inner_get_genshin_record("index", uid.unwrap(), None, lang, None, None)
             .await
             .unwrap()
@@ -62,7 +62,7 @@ impl GenshinClient {
         Ok(result.data)
     }
 
-    pub(crate) async fn get_characters(&self, uid: Option<u32>, lang: Option<&str>) -> anyhow::Result<genshin::character::Characters> {
+    pub(crate) async fn get_characters(&self, uid: Option<u32>, lang: Option<Languages>) -> anyhow::Result<genshin::character::Characters> {
         let result = self.inner_get_genshin_record("character", uid.unwrap(), Some("POST"), lang, None, None)
             .await
             .unwrap()
@@ -72,7 +72,7 @@ impl GenshinClient {
         Ok(result.data)
     }
 
-    pub(crate) async fn get_activities(&self, uid: Option<u32>, lang: Option<&str>) -> anyhow::Result<()> {
+    pub(crate) async fn get_activities(&self, uid: Option<u32>, lang: Option<Languages>) -> anyhow::Result<()> {
         let result = self.inner_get_genshin_record("activities", uid.unwrap(), None, lang, None, None)
             .await
             .unwrap();
@@ -84,7 +84,7 @@ impl GenshinClient {
         Ok(())
     }
 
-    pub(crate) async fn get_spiral_abyss(&self, uid: Option<u32>, previous: Option<bool>, lang: Option<&str>) -> anyhow::Result<genshin::abyss::SpiralAbyss> {
+    pub(crate) async fn get_spiral_abyss(&self, uid: Option<u32>, previous: Option<bool>, lang: Option<Languages>) -> anyhow::Result<genshin::abyss::SpiralAbyss> {
         let mut kwargs = Kwargs::new();
         let previous = if previous.is_some() { 2 } else { 1 };
         kwargs.set("schedule_type", previous);

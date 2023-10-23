@@ -5,3 +5,4 @@ pub mod notes;
 pub mod character;
 pub mod challenge;
 pub mod rogue;
+pub mod mihomo;

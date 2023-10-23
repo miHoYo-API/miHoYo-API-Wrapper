@@ -19,12 +19,10 @@
 //! - Last edit: 22/10/2023
 
 
-#![allow(non_snake_case)]
-
 
 pub(crate) mod component;
-mod model;
-mod util;
+pub mod model;
+pub mod util;
 pub mod types;
 pub mod client;
 

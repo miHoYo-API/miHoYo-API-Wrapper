@@ -1,11 +1,10 @@
 <div align="center">
-    <img src="https://i.imgur.com/pYG0dpf.png">
+    <img src="https://i.imgur.com/pYG0dpf.png" alt="">
     <img alt="Crates.io" src="https://img.shields.io/crates/d/miHoYo-API">
     <img alt="Crates.io (latest)" src="https://img.shields.io/crates/dv/miHoYo-API">
     <img alt="Crates.io (recent)" src="https://img.shields.io/crates/dr/miHoYo-API">
-    <img alt="Crates.io (version)" src="https://img.shields.io/crates/dv/miHoYo-API/0.1.5">
+    <img alt="Crates.io (version)" src="https://img.shields.io/crates/dv/miHoYo-API/0.1.7">
     <br>
-    <img alt="Discord" src="https://img.shields.io/discord/1058271208442953728?color=9001F5">
 </div>
 
 
@@ -22,7 +21,7 @@
 |:------------:|:-------:|:------:|:--------:| 
 |     User     |    ✓    |        |    ✓     |
 |  Characters  |    ✓    |        |    ✓     |
-| Characters*1 |         |        |          |
+| Characters*1 |         |        |    ✓     |
 | Challenge*2  |         |        |    ✓     |
 |    Notes     |    ✓    |        |    ✓     |
 
@@ -40,15 +39,33 @@ tokio = { version = "1.33.0", features = ["full"] }
 
 ``main.rs``
 ```rust
+#[allow(non_snake_case)]
+use miHoYo_API::client::Client;
+use miHoYo_API::types::Game;
 
+
+#[tokio::main]
+async fn main() {
+    let client = Client::default().set_from_env().unwrap();
+    let star_rail_id = client.get_game_account(Some("ja-jp"), Game::STARRAIL)
+        .await
+        .unwrap()
+        .get_uid();
+
+    let data = client.get_starrail_notes(Some(star_rail_id), Some("ja-jp"))
+        .await
+        .unwrap();
+
+    dbg!(data.recover_time_as_duration());
+}
 ```
-*TBA
 
 
 ## TODO
+
 |                | Genshin | Honkai | StarRail |
 |:--------------:|:-------:|:------:|:--------:| 
-|    preview     |         |        |          |
+|    preview     |         |        |    ✓     |
 |  Calc Relics   |         |        |          |
 | ExpeditionUtil |         |        |          |
 
@@ -56,8 +73,14 @@ tokio = { version = "1.33.0", features = ["full"] }
 Last Edit (_20/10/2023_)
 
 
+## 
+
+
 ## FAQ
 
-※idk how to expression so i write in Japanese sry
+※Idk how to expression so I write in Japanese sometime sry
 
+Q. Why is no there Honkai?
+
+A. Idk How to change to public. You'll be known that meant I said.
 

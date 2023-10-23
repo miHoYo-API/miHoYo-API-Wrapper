@@ -74,7 +74,7 @@ pub(crate) fn get_ds_headers(
     region: &types::Region,
     // data:
     // params: ,
-    lang: Option<&str>,
+    lang: Option<types::Languages>,
 
 ) -> HeaderMap {
     let mut map = HeaderMap::new();
@@ -82,7 +82,7 @@ pub(crate) fn get_ds_headers(
         types::Region::OVERSEAS => {
             map.insert("x-rpc-app_version", HeaderValue::from_static("1.5.0"));
             map.insert("x-rpc-client_type", HeaderValue::from_static("5"));
-            map.insert("x-rpc-language", HeaderValue::from_str(lang.unwrap_or("None")).unwrap());
+            map.insert("x-rpc-language", HeaderValue::from_str(lang.unwrap_or(types::Languages::EnUs).name().as_str()).unwrap());
             map.insert("ds", HeaderValue::from_str(generate_dynamic_secret(None).as_str()).unwrap());
             map
         }

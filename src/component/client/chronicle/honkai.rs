@@ -13,7 +13,7 @@ pub(crate) struct HonkaiClient(pub(crate) InnerClient<'static>);
 
 impl HonkaiClient {
     async fn inner_get_honkai_record(
-        &self, endpoint: &str, uid: u32, method: Option<&str>, lang: Option<&str>, payload: Option<Kwargs<'static>>, _cache: Option<bool>
+        &self, endpoint: &str, uid: u32, method: Option<&str>, lang: Option<types::Languages>, payload: Option<Kwargs<'static>>, _cache: Option<bool>
     ) -> anyhow::Result<Response> {
         let mut payload = payload.unwrap_or_else(|| Kwargs::new());
         payload.set("role_id", uid);
@@ -45,7 +45,7 @@ impl HonkaiClient {
         todo!()
     }
 
-    pub(crate) async fn get_user(&self, uid: Option<u32>, lang: Option<&str>) -> anyhow::Result<()> {
+    pub(crate) async fn get_user(&self, uid: Option<u32>, lang: Option<types::Languages>) -> anyhow::Result<()> {
         let result = self.inner_get_honkai_record("index", uid.unwrap(), None, lang, None, None)
             .await
             .unwrap();
