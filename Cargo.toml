@@ -11,7 +11,7 @@ version = "0.1.9"
 
 
 [features]
-default = [ "genshin", "honkai", "starrail" ]
+default = [ "genshin", "starrail" ]
 genshin = []
 honkai = []
 starrail = ["mihomo"]
