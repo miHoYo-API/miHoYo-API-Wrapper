@@ -1,3 +1,4 @@
+use anyhow::bail;
 use reqwest::Response;
 
 use crate::component::client::base::InnerClient;
@@ -14,7 +15,7 @@ pub(crate) struct GenshinClient(pub(crate) InnerClient<'static>);
 
 impl GenshinClient {
     async fn inner_get_genshin_record(
-        &self, endpoint: &str, uid: u32, method: Option<&str>, lang: Option<Languages>, payload: Option<Kwargs<'static>>, _cache: Option<bool>
+        &self, endpoint: &str, uid: u32, method: Option<&str>, lang: Option<Languages>, payload: Option<Kwargs>, _cache: Option<bool>
     ) -> anyhow::Result<Response> {
         let mut payload = payload.unwrap_or_else(|| Kwargs::new());
         payload.set("role_id", uid);
@@ -42,14 +43,17 @@ impl GenshinClient {
         Ok(data)
     }
 
-    pub(crate) async fn get_notes(&self, uid: Option<u32>, lang: Option<Languages>) -> anyhow::Result<genshin::notes::GenshinNote> {
-        let result = self.inner_get_genshin_record("dailyNote", uid.unwrap(), None, lang, None, None)
+    pub(crate) async fn get_notes(&self, uid: Option<u32>, lang: Option<Languages>) -> anyhow::Result<genshin::notes::GenshinNote, reqwest::Error> {
+        return match self.inner_get_genshin_record("dailyNote", uid.unwrap(), None, lang, None, None)
             .await
             .unwrap()
             .json::<ModelBase<genshin::notes::GenshinNote>>()
-            .await
-            .unwrap();
-        Ok(result.data)
+            .await {
+            Ok(result) => Ok(result.data),
+            Err(info) => {
+                Err(info)
+            }
+        };
     }
 
     pub(crate) async fn get_partial_user(&self, uid: Option<u32>, lang: Option<Languages>) -> anyhow::Result<genshin::stats::PartialUser> {

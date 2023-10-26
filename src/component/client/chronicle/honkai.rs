@@ -2,6 +2,8 @@ use reqwest::Response;
 
 use crate::component::client::base::InnerClient;
 use crate::component::client::chronicle::client::Chronicle;
+use crate::model::ModelBase;
+use crate::model::honkai;
 use crate::types;
 use crate::types::Game;
 use crate::util::kwargs::Kwargs;
@@ -13,7 +15,7 @@ pub(crate) struct HonkaiClient(pub(crate) InnerClient<'static>);
 
 impl HonkaiClient {
     async fn inner_get_honkai_record(
-        &self, endpoint: &str, uid: u32, method: Option<&str>, lang: Option<types::Languages>, payload: Option<Kwargs<'static>>, _cache: Option<bool>
+        &self, endpoint: &str, uid: u32, method: Option<&str>, lang: Option<types::Languages>, payload: Option<Kwargs>, _cache: Option<bool>
     ) -> anyhow::Result<Response> {
         let mut payload = payload.unwrap_or_else(|| Kwargs::new());
         payload.set("role_id", uid);

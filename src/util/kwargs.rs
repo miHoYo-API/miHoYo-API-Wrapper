@@ -1,4 +1,5 @@
 use std::any::Any;
+use std::sync::Arc;
 use std::collections::HashMap;
 use std::time::SystemTime;
 
@@ -10,37 +11,39 @@ use reqwest::header::{HeaderMap, HeaderValue};
 use crate::types;
 use crate::util::constants::DS_SALT;
 
+
 #[derive(Debug)]
-pub struct Kwargs<'a> {
-    values: HashMap<&'a str, Box<dyn Any>>,
+pub struct Kwargs {
+    values: HashMap<String, Arc<Box<dyn Any + Send + Sync>>>,
 }
 
-impl<'a> Kwargs<'a> {
+impl Kwargs {
     pub fn new() -> Self {
         Self {
             values: HashMap::new(),
         }
     }
 
-    pub fn set<T>(&mut self, k: &'a str, v: T)
-        where T: Any {
-        self.values.insert(k, Box::new(v));
-    }
-
-    pub fn get<T>(&self, key: &'a str) -> Option<&T>
-        where T: Any {
-        self.values.get(&key).and_then(|v| v.downcast_ref::<T>())
-    }
-
-    pub fn get_pair<T>(&self, key: &'a str) -> Option<(String, &T)>
-        where T: Any
+    pub fn set<T>(&mut self, k: &str, v: T)
+        where T: Any + Send + Sync
     {
-        for (k, v) in &self.values {
-            if k.eq(&key) {
-                return Some((k.to_string(), v.downcast_ref::<T>().unwrap()));
-            }
+        self.values.insert(k.to_string(), Arc::new(Box::new(v)));
+    }
+
+    pub fn get<T>(&self, key: &str) -> Option<&T>
+        where T: Any + Send + Sync
+    {
+        self.values.get(&key.to_string()).and_then(|v| v.downcast_ref::<T>())
+    }
+
+    pub fn get_pair<T>(&self, key: &str) -> Option<(String, &T)>
+        where
+            T: Any + Send + Sync,
+    {
+        match self.get::<T>(key) {
+            Some(val) => Some((key.to_string(), val)),
+            None => None,
         }
-        None
     }
 }
 

@@ -2,12 +2,10 @@
 
 use std::any::Any;
 use std::collections::HashMap;
-use anyhow::bail;
 
 pub(crate) type GeneralResult<T> = Result<T, Box<dyn std::error::Error + Send + Sync>>;
 pub(crate) type StringDict = HashMap<String, String>;
 pub(crate) type GeneralAny = Box<dyn Any + Send + Sync>;
-
 
 #[derive(Debug, PartialEq, Clone)]
 pub(crate) enum CookieOrHeader {
@@ -20,6 +18,19 @@ pub(crate) enum AnyCookieOrHeader {
     CookieOrHeader(CookieOrHeader),
     SequenceCookieOrHeader(Vec<CookieOrHeader>)
 }
+
+
+#[derive(Debug, PartialEq, Clone)]
+pub(crate) enum IDOr {
+    Int(i64),
+    // Unique,
+}
+impl IDOr {
+    pub(crate) fn to_int(&self) -> i64 {
+        match self { IDOr::Int(value) => value.clone() }
+    }
+}
+
 
 
 #[derive(Debug, Eq, PartialEq, Hash, Copy, Clone)]
@@ -107,7 +118,7 @@ impl RelicType {
             "FEET" => Self::Feet,
             "PLANAR_SPHERE" => Self::Ornament(OrnamentType::PlanarSphere),
             "LINK_ROPE" => Self::Ornament(OrnamentType::LinkRope),
-            _ => bail!("`{}` is doesn't any matches", specific_name)
+            _ => anyhow::bail!("`{}` is doesn't any matches", specific_name)
         };
         Ok(result)
     }

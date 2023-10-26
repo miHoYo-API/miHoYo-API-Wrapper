@@ -120,6 +120,15 @@ impl<'a> InnerClient<'a> {
             if let Some(pair) = data.1.get_pair::<String>("server") {
                 base.push((pair.0, pair.1.to_string()));
             }
+            if let Some(pair) = data.1.get_pair::<i64>("switch_id") {
+                base.push((pair.0, pair.1.to_string()));
+            }
+            if let Some(pair) = data.1.get_pair::<bool>("is_public") {
+                base.push((pair.0, pair.1.to_string()));
+            }
+            if let Some(pair) = data.1.get_pair::<i32>("game_id") {
+                base.push((pair.0, pair.1.to_string()));
+            }
         }
         base
     }
@@ -139,7 +148,7 @@ impl<'a> InnerClient<'a> {
         url: &str,
         method: &str,
         mut headers: HeaderMap,
-        kwargs: Kwargs<'a>,
+        kwargs: Kwargs,
     ) -> Result<Response> {
         let jar = Jar::default();
         let cookies = self.get_cookies().unwrap();
@@ -163,8 +172,9 @@ impl<'a> InnerClient<'a> {
         } else {
             data = data.json(&self.to_json(kwargs));
         }
+        let re = data.send().await.unwrap();
 
-        Ok(data.send().await.unwrap())
+        Ok(re)
     }
 
     pub(crate) async fn request_hoyolab(
@@ -174,7 +184,7 @@ impl<'a> InnerClient<'a> {
         region: Option<Region>,
         method: &str,
         headers: Option<HeaderMap>,
-        kwargs: Kwargs<'a>,
+        kwargs: Kwargs,
     ) -> Result<Response> {
         // ensure!(lang.is_none(),"lang were None");
         // let lang = lang.unwrap_or(self.lang.clone());
@@ -200,7 +210,7 @@ impl<'a> InnerClient<'a> {
     }
 
 
-    pub(crate) async fn request_game_record(&self, endpoint: &str, method: &str, lang: Option<Languages>, region: Option<Region>, game: Option<Game>, kwargs: Option<Kwargs<'_>>) -> Result<Response> {
+    pub(crate) async fn request_game_record(&self, endpoint: &str, method: &str, lang: Option<Languages>, region: Option<Region>, game: Option<Game>, kwargs: Option<Kwargs>) -> Result<Response> {
         let base_url = {
             let mut url = RECORD_URL.get_url(region.unwrap_or(Region::OVERSEAS)).unwrap().to_string();
             if let Some(game) = game {
@@ -240,5 +250,50 @@ impl<'a> InnerClient<'a> {
             .await
             .unwrap();
         Ok(result.data.list)
+    }
+
+    pub(crate) async fn update_settings(&self, settings: crate::types::IDOr, on: bool, game: Option<Game>) {
+        let mut game_title: Option<Game> = None;
+        if let Some(title) = game {
+            if let Some(default_game) = self.game {
+                if title == Game::STARRAIL || default_game == Game::STARRAIL {
+                    panic!("Star Rail does not provide a Battle Chronicle or Real-Time Notes.");
+                }
+            }
+        } else {
+            if settings.to_int() == 3 {
+                game_title = Some(Game::GENSHIN);
+            };
+            if game_title.is_none() {
+                game_title = self.game.clone();
+            };
+        };
+
+        let game_id = match game_title {
+            None => 0,
+            Some(value) => {
+                match value {
+                    Game::GENSHIN => 2,
+                    Game::HONKAI => 1,
+                    Game::STARRAIL => 6,
+                }
+            }
+        };
+
+        let mut kwargs = Kwargs::new();
+        let mut inner = Kwargs::new();
+        inner.set("switch_id", settings.to_int());
+        inner.set("is_public", on);
+        inner.set("game_id", game_id);
+        kwargs.set("data", inner);
+
+        self.request_game_record(
+            "card/wapi/changeDataSwitch",
+            "POST",
+            None,
+            None,
+            None,
+            Some(kwargs)
+        ).await.unwrap();
     }
 }

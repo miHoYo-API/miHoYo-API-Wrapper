@@ -19,8 +19,8 @@ use crate::types::Languages;
 
 /// A Client which can
 #[derive(Debug, Clone)]
-pub struct Client<'a> {
-    pub(crate) client: InnerClient<'a>,
+pub struct Client {
+    pub(crate) client: InnerClient<'static>,
     #[cfg(feature = "genshin")]
     pub(crate) genshin: Chronicle<GenshinClient>,
     #[cfg(feature = "honkai")]
@@ -29,7 +29,7 @@ pub struct Client<'a> {
     pub(crate) starrail: Chronicle<StarRailClient>
 }
 
-impl<'a> Default for Client<'a> {
+impl Default for Client {
     fn default() -> Self {
         Self {
             client: InnerClient::default(),
@@ -43,7 +43,7 @@ impl<'a> Default for Client<'a> {
     }
 }
 
-impl Client<'_> {
+impl Client {
     /// To Connect with HTTP(S) so need setting Cookies
     pub fn set_cookies<T: ToString>(&mut self, ltuid: T, ltoken: T) -> anyhow::Result<Self> {
         let mut dict = StringDict::new();
@@ -132,8 +132,7 @@ impl Client<'_> {
     #[cfg(feature = "genshin")]
     pub async fn get_genshin_notes(&self, uid: Option<u32>, lang: Option<Languages>) -> anyhow::Result<genshin::notes::GenshinNote> {
         let result = self.genshin.0.get_notes(uid, lang)
-            .await
-            .unwrap();
+            .await.unwrap();
         Ok(result)
     }
 
@@ -181,7 +180,7 @@ impl Client<'_> {
 
 
 
-    #[deprecated = "the response data of send thats always {\"data\":null,\"message\":\"Data is not public for the user\",\"retcode\":10102}. and idk how to turn to public"]
+    // #[deprecated = "the response data of send thats always {\"data\":null,\"message\":\"Data is not public for the user\",\"retcode\":10102}. and idk how to turn to public"]
     #[cfg(feature = "honkai")]
     pub async fn get_honkai_user(&self, uid: Option<u32>, lang: Option<Languages>) -> anyhow::Result<()> {
         let _result = self.honkai.0.get_user(uid, lang)

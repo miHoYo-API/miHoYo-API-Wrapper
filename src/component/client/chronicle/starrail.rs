@@ -15,7 +15,7 @@ pub(crate) struct StarRailClient(pub(crate) InnerClient<'static>);
 
 impl StarRailClient {
     async fn inner_get_starrail_record<'a>(
-        &self, endpoint: &str, uid: u32, method: Option<&str>, lang: Option<Languages>, payload: Option<Kwargs<'static>>, _cache: Option<bool>
+        &self, endpoint: &str, uid: u32, method: Option<&str>, lang: Option<Languages>, payload: Option<Kwargs>, _cache: Option<bool>
     ) -> anyhow::Result<Response> {
         let mut payload = payload.unwrap_or_else(|| Kwargs::new());
         payload.set("role_id", uid);
