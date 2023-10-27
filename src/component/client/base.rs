@@ -13,7 +13,6 @@ use crate::component::routes::InternationalTrait;
 use crate::model::hoyolab::record::{RecordCard, RecordCardList};
 use crate::model::ModelBase;
 use crate::types::{AnyCookieOrHeader, Game, Region, Languages};
-use crate::types::StringDict;
 use crate::util::constants::*;
 use crate::util::kwargs::get_ds_headers;
 use crate::util::kwargs::Kwargs;
@@ -252,7 +251,7 @@ impl<'a> InnerClient<'a> {
         Ok(result.data.list)
     }
 
-    pub(crate) async fn update_settings(&self, settings: crate::types::IDOr, on: bool, game: Option<Game>) {
+    pub(crate) async fn update_settings(&self, settings: crate::types::IDOr, on: bool, game: Option<Game>) -> Result<()> {
         let mut game_title: Option<Game> = None;
         if let Some(title) = game {
             if let Some(default_game) = self.game {
@@ -287,6 +286,8 @@ impl<'a> InnerClient<'a> {
         inner.set("game_id", game_id);
         kwargs.set("data", inner);
 
+        dbg!(&kwargs.get::<Kwargs>("data").unwrap());
+
         self.request_game_record(
             "card/wapi/changeDataSwitch",
             "POST",
@@ -295,5 +296,6 @@ impl<'a> InnerClient<'a> {
             None,
             Some(kwargs)
         ).await.unwrap();
+        Ok(())
     }
 }

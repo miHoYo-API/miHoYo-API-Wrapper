@@ -8,6 +8,13 @@
 </div>
 
 
+## CAUTION
+
+- Only **success** get to the data if you've done with [genshin.py](https://github.com/thesadru/genshin.py) even once the __same Cookies__. Cuz I don't know at all fr.
+- miHoYoAPI-Wrapper cannot use v2 cookies. Cuz the message was "Login expired" from API. tbh idk how to solution 
+- that's all, well, If I had vitality smthing, this crate would be more powerful. but I'm dumb, I'm sorry. 
+
+
 ## Original
 
 [genshin.py](https://github.com/thesadru/genshin.py) by [thesadru](https://github.com/thesadru)

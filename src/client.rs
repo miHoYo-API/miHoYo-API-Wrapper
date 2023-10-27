@@ -105,8 +105,10 @@ impl Client {
             None,
             Kwargs::new(),
         ).await.unwrap();
-        let account_data = result.json::<ModelBase<AccountList>>().await.unwrap();
-        Ok(account_data.data.list)
+        match result.json::<ModelBase<Option<AccountList>>>().await.unwrap().data {
+            None => Ok(vec![]),
+            Some(val) => Ok(val.list)
+        }
     }
 
 

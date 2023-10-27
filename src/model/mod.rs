@@ -11,7 +11,7 @@ pub mod starrail;
 #[derive(Debug, Deserialize)]
 pub(crate) struct ModelBase<T> {
     #[serde(rename = "retcode")]
-    _retcode: u32,
+    _retcode: i32,
     #[serde(rename = "message")]
     _message: String,
     pub(crate) data: T

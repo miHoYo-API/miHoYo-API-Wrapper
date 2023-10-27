@@ -5,7 +5,7 @@ use crate::component::client::chronicle::client::Chronicle;
 use crate::model::ModelBase;
 use crate::model::honkai;
 use crate::types;
-use crate::types::Game;
+use crate::types::{Game, IDOr};
 use crate::util::kwargs::Kwargs;
 use crate::util::uid::recognize_honkai_server;
 
@@ -52,9 +52,20 @@ impl HonkaiClient {
             .await
             .unwrap();
 
-        dbg!(result.text()
-            .await
-            .unwrap());
+        let model = match result.json::<ModelBase<honkai::user::Test>>().await {
+            Ok(success) => Ok(success),
+            Err(_) => {
+                self.0.update_settings(IDOr::Int(2), true, Some(Game::HONKAI)).await.unwrap();
+                let string = self.inner_get_honkai_record("index", uid.unwrap(), None, lang, None, None)
+                    .await.unwrap().text().await.unwrap();
+                dbg!(string);
+
+
+                Err(())
+            }
+        };
+
+        dbg!(model.unwrap());
 
         Ok(())
     }

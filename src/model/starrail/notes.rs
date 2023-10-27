@@ -1,5 +1,6 @@
-use std::collections::HashMap;
+use std::ops::Add;
 use std::time::Duration;
+use std::collections::HashMap;
 
 use serde::Deserialize;
 
@@ -72,7 +73,9 @@ impl StarRailNote {
 
     /// The return value is Stamina recover time as [`Duration`]
     pub fn recover_time_as_duration(&self) -> Duration {
-        Duration::from_secs(self.stamina_recover_time as u64)
+        let duration = Duration::from_secs(std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_secs())
+            .add(Duration::from_secs(self.stamina_recover_time as u64));
+        duration
     }
 }
 
