@@ -40,7 +40,6 @@ mod tests {
 
         let data = client.get_starrail_characters(Some(game.get_uid()), Some(Languages::JaJp))
             .await.unwrap();
-
         dbg!(data);
     }
 }
