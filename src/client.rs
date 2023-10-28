@@ -45,10 +45,10 @@ impl Default for Client {
 
 impl Client {
     /// To Connect with HTTP(S) so need setting Cookies
-    pub fn set_cookies<T: ToString>(&mut self, ltuid: T, ltoken: T) -> anyhow::Result<Self> {
+    pub fn set_cookies<T: ToString>(&mut self, ltuid: (T, T), ltoken: (T, T)) -> anyhow::Result<Self> {
         let mut dict = StringDict::new();
-        dict.insert(String::from("ltuid"), ltuid.to_string());
-        dict.insert(String::from("ltoken"), ltoken.to_string());
+        dict.insert(ltuid.0.to_string(), ltuid.1.to_string());
+        dict.insert(ltoken.0.to_string(), ltoken.1.to_string());
 
         self.client.cookie_manager = Some(BaseCookieManager::from_cookies(
             Some(AnyCookieOrHeader::CookieOrHeader(CookieOrHeader::Dict(dict.clone())))
@@ -56,9 +56,7 @@ impl Client {
 
         #[cfg(feature = "genshin")]
         {
-            self.genshin.0.0.cookie_manager = Some(BaseCookieManager::from_cookies(
-                Some(AnyCookieOrHeader::CookieOrHeader(CookieOrHeader::Dict(dict.clone())))
-            ));
+            self.genshin.0.0.cookie_manager = Some(BaseCookieManager::from_cookies(Some(AnyCookieOrHeader::CookieOrHeader(CookieOrHeader::Dict(dict.clone())))));
         }
 
         #[cfg(feature = "honkai")]
@@ -86,9 +84,23 @@ impl Client {
             bail!("Unable find .env file: {}", why);
         };
 
+        let ltuid = env::var("ltuid").unwrap_or_else(|_| env::var("ltuid_v2").unwrap());
+        let ltoken = env::var("ltoken").unwrap_or_else(|_| env::var("ltoken_v2").unwrap());
+
+        let (ltuid, ltuid_values) = if ltuid.to_string().contains("v2") {
+            (String::from("ltuid_v2"), ltuid.to_string())
+        } else {
+            (String::from("ltuid"), ltuid.to_string())
+        };
+        let (ltoken, ltoken_values) = if ltoken.to_string().contains("v2") {
+            (String::from("ltoken_v2"), ltoken.to_string())
+        } else {
+            (String::from("ltoken"), ltoken.to_string())
+        };
+
         self.set_cookies(
-            env::var("ltuid").unwrap(),
-            env::var("ltoken").unwrap()
+            (ltuid, ltuid_values),
+            (ltoken, ltoken_values),
         )
     }
 

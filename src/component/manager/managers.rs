@@ -70,12 +70,12 @@ impl BaseCookieManager {
     }
 
     pub(crate) fn forming_cookie(&self) -> (String, String) {
-        let header = &self.cookies.as_ref().unwrap();
+        let header = self.cookies.as_ref().unwrap();
 
         match header {
             CookieOrHeader::Dict(cookie) => {
-                let ltuid = cookie.get("ltuid").unwrap();
-                let ltoken = cookie.get("ltoken").unwrap();
+                let ltuid = cookie.get("ltuid").unwrap_or_else(|| cookie.get("ltuid_v2").unwrap());
+                let ltoken = cookie.get("ltoken").unwrap_or_else(|| cookie.get("ltoken_v2").unwrap());
                 return (format!("ltuid={}", ltuid), format!("ltoken={}", ltoken))
             }
             _ => (String::new(), String::new())
