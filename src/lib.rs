@@ -1,45 +1,43 @@
-//! miHoYo-API Wrapper is a API wrapper literally.
-//!
-//! ### Here's Original
-//!
-//! [genshin.py](https://github.com/thesadru/genshin.py) by [thesadru](https://github.com/thesadru)
-//! With Grateful Respect.
-//!
-//!
-//! ### Installation
-//!
-//! `$ cargo add mihoyo-api`
-//!
-//! Also
-//!
-//! ```toml
-//! miHoYo-API = "0.1"
-//! ```
-//!
-//! - Last edit: 22/10/2023
-
-
-
-pub(crate) mod component;
-pub mod model;
-pub mod util;
-pub mod types;
+pub mod typing;
 pub mod client;
 
+pub(crate) mod components;
+pub(crate) mod error;
 
 
 #[cfg(test)]
-mod tests {
-    use super::client::Client;
-    use super::types::{Languages, Game};
+mod test {
+    use crate::client::Client;
+    use crate::typing::{Game, Languages};
+
 
     #[tokio::test]
-    async fn it_works() {
-        let client = Client::default().set_from_env().unwrap();
-        let game = client.get_game_account(Some(Languages::JaJp), Game::STARRAIL).await.unwrap();
+    async fn it_works() -> anyhow::Result<()> {
+        /// Initialize Client variable.
+        let mut client = Client::new();
 
-        let data = client.get_starrail_characters(Some(game.get_uid()), Some(Languages::JaJp))
-            .await.unwrap();
-        dbg!(data);
+        /// Setting for two cookies connect [Hoyolab](https://www.hoyolab.com/home).
+        /// And another way to set,  you can use [`Client::set_cookies`]
+        client.set_from_env(None)?;
+
+        /// Getting [`crate::components::models::hoyolab::record::Account`] as elements in Vectors.
+        let accounts = client.get_game_account(Some(Game::StarRail), None).await?;
+
+        /// Extract UID from account.
+        let uid = accounts.get(0).unwrap().get_uid();
+
+        /// Extract StarRail UID from [Hoyolab](https://www.hoyolab.com/home).
+        /// getting user accounts as contains in Vector and then filtered by user level.
+        let account_id = client.get_game_accounts(Some(Languages::JaJp)).await?
+            .into_iter().filter(|account| account.level == 70).next().unwrap().get_uid();
+
+        /// This [`crate::components::chronicle::starrail::StarRailClient::get_preview_data`] is only β.
+        /// Getting as [`crate::components::models::starrail::mihomo::Mihomo`].
+        /// --About lang argument, Here's [corresponding string list]()--
+        /// I'm gonna create a enum of Language.
+        let user_data = client.starrail.get_preview_data(account_id, Some("jp")).await.unwrap();
+        dbg!(user_data);
+
+        Ok(())
     }
 }

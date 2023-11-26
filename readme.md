@@ -14,6 +14,11 @@
 - miHoYoAPI-Wrapper cannot use v2 cookies. Cuz the message was "Login expired" from API. tbh idk how to solution 
 - that's all, well, If I had vitality smthing, this crate would be more powerful. but I'm dumb, I'm sorry. 
 
+## Now I'm working on those problems.
+And I need a huge help to improvement this, So I will appreciate you help if you text me.
+
+Discord: ennui_lw
+
 
 ## Original
 
@@ -26,17 +31,19 @@
 
 |              | Genshin | Honkai | StarRail |
 |:------------:|:-------:|:------:|:--------:| 
-|     User     |    ✓    |        |    ✓     |
-|  Characters  |    ✓    |        |    ✓     |
-| Characters*1 |         |        |    ✓     |
-| Challenge*2  |         |        |    ✓     |
-|    Notes     |    ✓    |        |    ✓     |
+|     User     |         |        |          |
+|  Characters  |         |        |          |
+| Characters*1 |         |        |          |
+| Challenge*2  |         |        |          |
+|    Notes     |         |        |          |
 
 - *1 Game Characters on Preview
 - *2 Spiral Abyss / (None) / Challenge
 
 
 ## How to Use
+
+#### THIS is OLD code. I will edit this
 
 ``Cargo.toml``
 ```toml
@@ -77,7 +84,7 @@ async fn main() {
 | ExpeditionUtil |         |        |          |
 
 
-Last Edit (_20/10/2023_)
+Last Edit (_26/11/2023_)
 
 
 ## 

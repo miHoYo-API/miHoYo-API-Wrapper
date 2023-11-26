@@ -1,264 +1,129 @@
-use anyhow::bail;
+use std::collections::HashMap;
+use itertools::Itertools;
+use crate::components::base::InnerClient;
+use crate::components::chronicle::starrail::StarRailClient;
+use crate::components::models::Base;
+use crate::components::models::hoyolab::record::{Account, AccountList};
+use crate::typing::{Dict, Game, Languages};
 
-use crate::component::client::base::InnerClient;
-use crate::component::client::chronicle::client::Chronicle;
-#[cfg(feature = "genshin")]
-use crate::component::client::chronicle::genshin::GenshinClient;
-#[cfg(feature = "honkai")]
-use crate::component::client::chronicle::honkai::HonkaiClient;
-#[cfg(feature = "starrail")]
-use crate::component::client::chronicle::starrail::StarRailClient;
-use crate::component::manager::managers::BaseCookieManager;
-#[allow(unused)]
-use crate::model::{genshin, honkai, ModelBase, starrail};
-use crate::model::genshin::stats::UserWithCharacters;
-use crate::model::hoyolab::record::{Account, AccountList, RecordCard};
-use crate::types::{AnyCookieOrHeader, CookieOrHeader, Game, StringDict};
-use crate::util::kwargs::Kwargs;
-use crate::types::Languages;
 
-/// A Client which can
-#[derive(Debug, Clone)]
+
 pub struct Client {
-    pub(crate) client: InnerClient<'static>,
-    #[cfg(feature = "genshin")]
-    pub(crate) genshin: Chronicle<GenshinClient>,
-    #[cfg(feature = "honkai")]
-    pub(crate) honkai: Chronicle<HonkaiClient>,
-    #[cfg(feature = "starrail")]
-    pub(crate) starrail: Chronicle<StarRailClient>
+    pub(crate) client: InnerClient,
+    pub(crate) starrail: StarRailClient,
 }
 
 impl Default for Client {
     fn default() -> Self {
-        Self {
+        Client {
             client: InnerClient::default(),
-            #[cfg(feature = "genshin")]
-            genshin: Chronicle::<GenshinClient>::new(),
-            #[cfg(feature = "honkai")]
-            honkai: Chronicle::<HonkaiClient>::new(),
-            #[cfg(feature = "starrail")]
-            starrail: Chronicle::<StarRailClient>::new(),
+            starrail: StarRailClient::default(),
         }
+    }
+}
+
+impl AsMut<Client> for Client {
+    fn as_mut(&mut self) -> &mut Client {
+        self
     }
 }
 
 impl Client {
-    /// To Connect with HTTP(S) so need setting Cookies
-    pub fn set_cookies<T: ToString>(&mut self, ltuid: (T, T), ltoken: (T, T)) -> anyhow::Result<Self> {
-        let mut dict = StringDict::new();
-        dict.insert(ltuid.0.to_string(), ltuid.1.to_string());
-        dict.insert(ltoken.0.to_string(), ltoken.1.to_string());
-
-        self.client.cookie_manager = Some(BaseCookieManager::from_cookies(
-            Some(AnyCookieOrHeader::CookieOrHeader(CookieOrHeader::Dict(dict.clone())))
-        ));
-
-        #[cfg(feature = "genshin")]
-        {
-            self.genshin.0.0.cookie_manager = Some(BaseCookieManager::from_cookies(Some(AnyCookieOrHeader::CookieOrHeader(CookieOrHeader::Dict(dict.clone())))));
+    pub fn new() -> Client {
+        Client {
+            client: InnerClient::default(),
+            starrail: StarRailClient::default(),
         }
-
-        #[cfg(feature = "honkai")]
-        {
-            self.honkai.0.0.cookie_manager = Some(BaseCookieManager::from_cookies(
-                Some(AnyCookieOrHeader::CookieOrHeader(CookieOrHeader::Dict(dict.clone())))
-            ));
-        }
-
-        #[cfg(feature = "starrail")]
-        {
-            self.starrail.0.0.cookie_manager = Some(BaseCookieManager::from_cookies(
-                Some(AnyCookieOrHeader::CookieOrHeader(CookieOrHeader::Dict(dict.clone())))
-            ));
-        }
-
-        Ok(self.clone())
     }
 
-    /// setting cookies from .env file.
-    pub fn set_from_env<'a>(&mut self) -> anyhow::Result<Self> {
-        use std::env;
 
-        if let Err(why) = dotenv::dotenv() {
-            bail!("Unable find .env file: {}", why);
+    /// HELP: Someone tell me how to use as method chain without as_mut func
+    pub fn set_cookies(&mut self,  cookies: CookieType) -> anyhow::Result<&mut Self> {
+        use crate::components::managers::manager::{__parse_cookies, auto_cookie};
+
+        let cookies = match cookies {
+            CookieType::Str(cookies) => __parse_cookies(String::from(cookies)),
+            CookieType::Dict(cookies) => {
+                let mut dict = Dict::new();
+                for (key, value) in cookies.into_iter() {
+                    dict.insert(key.to_string(), value.to_string());
+                }
+                dict
+            }
         };
 
-        let ltuid = env::var("ltuid").unwrap_or_else(|_| env::var("ltuid_v2").unwrap());
-        let ltoken = env::var("ltoken").unwrap_or_else(|_| env::var("ltoken_v2").unwrap());
+        self.client.cookie_manager = auto_cookie(cookies);
 
-        let (ltuid, ltuid_values) = if ltuid.to_string().contains("v2") {
-            (String::from("ltuid_v2"), ltuid.to_string())
-        } else {
-            (String::from("ltuid"), ltuid.to_string())
-        };
-        let (ltoken, ltoken_values) = if ltoken.to_string().contains("v2") {
-            (String::from("ltoken_v2"), ltoken.to_string())
-        } else {
-            (String::from("ltoken"), ltoken.to_string())
-        };
+        #[cfg(feature = "genshin")] {
 
-        self.set_cookies(
-            (ltuid, ltuid_values),
-            (ltoken, ltoken_values),
-        )
+        }
+
+        #[cfg(feature = "starrail")] {
+
+        }
+
+        #[cfg(feature = "honkai")] {
+
+        }
+
+        Ok(self)
     }
 
-    /// Get the accounts that miHoYo game as listed in `Vec`
-    /// - _Genshin_
-    /// - _Honkai 3rd_
-    /// - _StarRail_
+    pub fn set_from_env(&mut self, path: Option<&str>) -> anyhow::Result<&mut Self> {
+        use std::env::var;
+
+        match path {
+            None => dotenv::dotenv()?,
+            Some(path) => dotenv::from_filename(path)?
+        };
+
+        let ltuid = var("ltuid").unwrap_or_else(|_| var("ltuid_v2").unwrap());
+        let ltoken = var("ltoken").unwrap_or_else(|_| var("ltoken_v2").unwrap());
+        let name = if ltoken.contains("v2") {
+            (String::from("ltuid_v2"), String::from("ltoken_v2"))
+        } else {
+            (String::from("ltuid"), String::from("ltoken"))
+        };
+
+        let dict = HashMap::from([
+            (name.0, ltuid),
+            (name.1, ltoken),
+        ]);
+
+        self.set_cookies(CookieType::Dict(dict))
+    }
+
+    // Vec<Account>
     pub async fn get_game_accounts(&self, lang: Option<Languages>) -> anyhow::Result<Vec<Account>> {
-        let result = self.client.request_hoyolab(
-            "binding/api/getUserGameRolesByCookie",
-            lang,
-            None,
-            "GET",
-            None,
-            Kwargs::new(),
-        ).await.unwrap();
-        match result.json::<ModelBase<Option<AccountList>>>().await.unwrap().data {
-            None => Ok(vec![]),
-            Some(val) => Ok(val.list)
+        let result = self.client.request_hoyolab("binding/api/getUserGameRolesByCookie",
+             lang,
+         None,
+         None,
+         None,
+         None
+        ).await?;
+
+        match result.json::<Base<AccountList>>().await {
+            Ok(val) => Ok(val.data.list),
+            Err(why) => {
+                panic!("{}", why)
+            }
         }
     }
 
-
-    /// You can set the Game you want
-    pub async fn get_game_account(&self, lang: Option<Languages>, game: Game) -> Option<Account> {
-        let result = self.get_game_accounts(lang)
-            .await
-            .unwrap();
-        result
+    pub async fn get_game_account(&self, game: Option<Game>, lang: Option<Languages>) -> anyhow::Result<Vec<Account>> {
+        let game = game.unwrap_or_else(|| self.client.game.clone());
+        let accounts = self.get_game_accounts(lang).await?
             .into_iter()
-            .filter(|account| account.which_game() == game)
-            .next()
-    }
-
-    pub async fn get_record_cards(&self, hoyolab_id: Option<u32>, lang: Option<Languages>) -> anyhow::Result<Vec<RecordCard>> {
-        let result = self.client.get_record_cards(hoyolab_id, lang)
-            .await
-            .unwrap();
-        Ok(result)
-    }
-
-
-    #[cfg(feature = "genshin")]
-    pub async fn get_genshin_notes(&self, uid: Option<u32>, lang: Option<Languages>) -> anyhow::Result<genshin::notes::GenshinNote> {
-        let result = self.genshin.0.get_notes(uid, lang)
-            .await.unwrap();
-        Ok(result)
-    }
-
-    #[cfg(feature = "genshin")]
-    pub async fn get_genshin_partial_user(&self, uid: Option<u32>, lang: Option<Languages>) -> anyhow::Result<genshin::stats::PartialUser> {
-        let result = self.genshin.0.get_partial_user(uid, lang)
-            .await
-            .unwrap();
-        Ok(result)
-    }
-
-    #[cfg(feature = "genshin")]
-    pub async fn get_genshin_characters(&self, uid: Option<u32>, lang: Option<Languages>) -> anyhow::Result<genshin::character::Characters> {
-        let result = self.genshin.0.get_characters(uid, lang)
-            .await
-            .unwrap();
-        Ok(result)
-    }
-
-    #[cfg(feature = "genshin")]
-    pub async fn get_genshin_user(&self, uid: Option<u32>, lang: Option<Languages>) -> anyhow::Result<genshin::stats::UserWithCharacters> {
-        let user = self.get_genshin_partial_user(uid.clone(), lang.clone())
-            .await.unwrap();
-        let characters = self.get_genshin_characters(uid, lang)
-            .await.unwrap();
-        Ok(UserWithCharacters::new(user, characters.characters))
-    }
-
-    #[deprecated = "It so annoying to write A model for Deserialize. Its killed me."]
-    #[cfg(feature = "genshin")]
-    pub async fn get_genshin_activities(&self, uid: Option<u32>, lang: Option<Languages>) -> anyhow::Result<()> {
-        let _result = self.genshin.0.get_activities(uid, lang)
-            .await
-            .unwrap();
-        Ok(())
-    }
-
-    #[cfg(feature = "genshin")]
-    pub async fn get_genshin_spiral_abyss(&self, uid: Option<u32>, previous: Option<bool>, lang: Option<Languages>) -> anyhow::Result<genshin::abyss::SpiralAbyss> {
-        let result = self.genshin.0.get_spiral_abyss(uid, previous, lang)
-            .await
-            .unwrap();
-        Ok(result)
-    }
-
-
-
-    // #[deprecated = "the response data of send thats always {\"data\":null,\"message\":\"Data is not public for the user\",\"retcode\":10102}. and idk how to turn to public"]
-    #[cfg(feature = "honkai")]
-    pub async fn get_honkai_user(&self, uid: Option<u32>, lang: Option<Languages>) -> anyhow::Result<()> {
-        let _result = self.honkai.0.get_user(uid, lang)
-            .await
-            .unwrap();
-        Ok(())
-    }
-
-
-
-    #[cfg(feature = "starrail")]
-    pub async fn get_starrail_notes(&self, uid: Option<u32>, lang: Option<Languages>) -> anyhow::Result<starrail::notes::StarRailNote> {
-        let result = self.starrail.0.get_notes(uid, lang, None)
-            .await
-            .unwrap();
-        Ok(result)
-    }
-
-    #[cfg(feature = "starrail")]
-    pub async fn get_starrail_user(&self, uid: Option<u32>, lang: Option<Languages>) -> anyhow::Result<starrail::stats::UserStats> {
-        let result = self.starrail.0.get_user(uid, lang)
-            .await
-            .unwrap();
-        Ok(result)
-    }
-
-    #[cfg(feature = "starrail")]
-    pub async fn get_starrail_characters(&self, uid: Option<u32>, lang: Option<Languages>) -> anyhow::Result<Vec<starrail::character::CharacterDetails>> {
-        let result = self.starrail.0.get_characters(uid, lang)
-            .await
-            .unwrap();
-        Ok(result)
-    }
-
-    #[cfg(feature = "starrail")]
-    pub async fn get_starrail_challenge(&self, uid: Option<u32>, previous: Option<bool>, lang: Option<Languages>) -> anyhow::Result<starrail::challenge::Challenge> {
-        let result = self.starrail.0.get_challenge(uid, previous, lang)
-            .await
-            .unwrap();
-        Ok(result)
-    }
-
-    #[cfg(feature = "starrail")]
-    pub async fn get_starrail_rogue(&self, uid: Option<u32>, schedule_type: Option<i32>, lang: Option<Languages>) -> anyhow::Result<starrail::rogue::Rogue> {
-        let result = self.starrail.0.get_rouge(uid, schedule_type, lang)
-            .await
-            .unwrap();
-        Ok(result)
-    }
-
-    #[cfg(feature = "starrail")]
-    pub async fn get_starrail_preview(&self, uid: u32, lang: Option<&str>) -> anyhow::Result<starrail::mihomo::Mihomo> {
-        let result = self.starrail.0.get_preview(uid, lang)
-            .await
-            .unwrap();
-        Ok(result)
-    }
-
-    #[cfg(feature = "starrail")]
-    pub async fn get_starrail_preview_characters(&self, uid: u32, lang: Option<&str>) -> anyhow::Result<Vec<starrail::mihomo::Characters>> {
-        let result = self.starrail.0.get_preview(uid, lang)
-            .await
-            .unwrap();
-        Ok(result.characters)
+            .filter(|account| {
+                account.which_game().eq(&game)
+            })
+            .collect_vec();
+        Ok(accounts)
     }
 }
 
+pub enum CookieType {
+    Str(&'static str),
+    Dict(HashMap<String, String>),
+}
