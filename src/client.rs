@@ -17,6 +17,7 @@ impl Default for Client {
     fn default() -> Self {
         Client {
             client: InnerClient::default(),
+            #[cfg(feature = "starrail")]
             starrail: StarRailClient::default(),
         }
     }
@@ -32,6 +33,7 @@ impl Client {
     pub fn new() -> Client {
         Client {
             client: InnerClient::default(),
+            #[cfg(feature = "starrail")]
             starrail: StarRailClient::default(),
         }
     }
@@ -59,7 +61,7 @@ impl Client {
         }
 
         #[cfg(feature = "starrail")] {
-
+            self.starrail.0.cookie_manager = auto_cookie(cookies.clone());
         }
 
         #[cfg(feature = "honkai")] {

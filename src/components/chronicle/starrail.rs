@@ -53,6 +53,8 @@ impl StarRailClient {
 
     /// This functions is only β.
     /// Ref: https://github.com/Mar-7th
+
+    #[cfg(feature = "mihomo")]
     pub async fn get_preview_data(&self, uid: u32, lang: Option<&str>) -> Result<starrail::mihomo::Mihomo> {
         let url = format!("https://api.mihomo.me/sr_info_parsed/{}?lang={}",
                               uid, lang.unwrap_or("en"));
