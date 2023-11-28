@@ -10,7 +10,7 @@ use crate::typing::{Dict, Game, Languages};
 
 pub struct Client {
     pub(crate) client: InnerClient,
-    pub(crate) starrail: StarRailClient,
+    pub starrail: StarRailClient,
 }
 
 impl Default for Client {
