@@ -54,7 +54,7 @@ impl Client {
             }
         };
 
-        self.client.cookie_manager = auto_cookie(cookies);
+        self.client.cookie_manager = auto_cookie(cookies.clone());
 
         #[cfg(feature = "genshin")] {
 

@@ -7,7 +7,7 @@ use crate::typing::{Dict, Game, Languages};
 use super::super::utils::uid::{recognize_starrail_server, recognize_region};
 
 
-pub(crate) struct StarRailClient(pub(crate) InnerClient);
+pub struct StarRailClient(pub(crate) InnerClient);
 
 impl Default for StarRailClient {
     fn default() -> Self {
