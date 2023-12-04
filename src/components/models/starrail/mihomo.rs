@@ -1,4 +1,5 @@
 use std::fs::File;
+use std::borrow::Cow;
 use std::io::BufReader;
 use std::collections::HashMap;
 use anyhow::bail;
@@ -89,59 +90,56 @@ impl Characters {
     }
 
     /// GARBAGE CODE.
-    pub fn status_details(&self) -> Vec<StatusDetail> {
-        let mut attr = &self.attributes;
-        let mut addi = &self.additions;
-        let mut vec = vec![
-            StatusDetail::new(
-                "hp",
-                attr.iter().filter(|a| a.field.eq("hp")).next().unwrap(),
-                addi.iter().filter(|a| a.field.eq("hp")).next().unwrap(),
-            ),
-            StatusDetail::new(
-                "atk",
-                attr.iter().filter(|a| a.field.eq("atk")).next().unwrap(),
-                addi.iter().filter(|a| a.field.eq("atk")).next().unwrap()
-            ),
-            StatusDetail::new(
-                "def",
-                attr.iter().filter(|a| a.field.eq("def")).next().unwrap(),
-                addi.iter().filter(|a| a.field.eq("def")).next().unwrap()
-            ),
-            StatusDetail::new(
-                "spd",
-                attr.iter().filter(|a| a.field.eq("spd")).next().unwrap(),
-                addi.iter().filter(|a| a.field.eq("spd")).next().unwrap(),
-            ),
-            StatusDetail::new(
-                "crit_rate",
-                attr.iter().filter(|a| a.field.eq("crit_rate")).next().unwrap(),
-                addi.iter().filter(|a| a.field.eq("crit_rate")).next().unwrap(),
-            ),
-            StatusDetail::new(
-                "crit_dmg",
-                attr.iter().filter(|a| a.field.eq("crit_dmg")).next().unwrap(),
-                addi.iter().filter(|a| a.field.eq("crit_dmg")).next().unwrap(),
-            )
-        ];
-
-
-        vec
-    }
+    // pub fn status_details(&self) -> Vec<StatusDetail> {
+    //     let mut attr = self.attributes.iter();
+    //     let mut addi = self.additions.iter();
+    //     vec![
+    //         StatusDetail::new(
+    //             "hp",
+    //             attr.filter(|a| a.field.eq("hp")).cloned().next().unwrap(),
+    //             addi.filter(|a| a.field.eq("hp")).cloned().next().unwrap(),
+    //         ),
+    //         StatusDetail::new(
+    //             "atk",
+    //             attr.filter(|a| a.field.eq("atk")).cloned().next().unwrap(),
+    //             addi.filter(|a| a.field.eq("atk")).cloned().next().unwrap()
+    //         ),
+    //         StatusDetail::new(
+    //             "def",
+    //             attr.filter(|a| a.field.eq("def")).cloned().next().unwrap(),
+    //             addi.filter(|a| a.field.eq("def")).cloned().next().unwrap()
+    //         ),
+    //         StatusDetail::new(
+    //             "spd",
+    //             attr.filter(|a| a.field.eq("spd")).cloned().next().unwrap(),
+    //             addi.filter(|a| a.field.eq("spd")).cloned().next().unwrap(),
+    //         ),
+    //         StatusDetail::new(
+    //             "crit_rate",
+    //             attr.filter(|a| a.field.eq("crit_rate")).cloned().next().unwrap(),
+    //             addi.filter(|a| a.field.eq("crit_rate")).cloned().next().unwrap(),
+    //         ),
+    //         StatusDetail::new(
+    //             "crit_dmg",
+    //             attr.filter(|a| a.field.eq("crit_dmg")).cloned().next().unwrap(),
+    //             addi.filter(|a| a.field.eq("crit_dmg")).cloned().next().unwrap(),
+    //         )
+    //     ]
+    // }
 }
 
-pub struct StatusDetail<'a> {
-    pub flag: String,
-    pub attr: &'a Attributes,
-    pub addi: &'a Addition
-}
-impl StatusDetail<'_> {
-    pub fn new<T: AsRef<String>>(flag: T, attr: &Attributes, addi: &Addition) -> Self {
-        Self {
-            flag, attr, addi
-        }
-    }
-}
+// pub struct StatusDetail {
+//     pub flag: String,
+//     pub attr: Attributes,
+//     pub addi: Addition
+// }
+// impl StatusDetail {
+//     pub fn new(flag: impl AsRef<str>, attr: Attributes, addi: Addition) -> Self {
+//         Self {
+//             flag: flag.as_ref().to_string().into(), attr, addi
+//         }
+//     }
+// }
 
 #[derive(Debug, Deserialize)]
 pub struct Path {
@@ -200,7 +198,7 @@ pub struct LightCone {
     pub properties: Vec<Properties>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 pub struct Attributes {
     pub field: String,
     pub name: String,
@@ -302,7 +300,7 @@ pub(crate) fn relic_deserialize() -> anyhow::Result<RelicsInfo> {
 }
 
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 pub struct Addition {
     pub field: String,
     pub name: String,
