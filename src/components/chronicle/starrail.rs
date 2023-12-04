@@ -2,6 +2,7 @@ use anyhow::Result;
 use reqwest::Response;
 use crate::components::models::starrail;
 use crate::components::base::InnerClient;
+use crate::components::models::starrail::mihomo;
 use crate::typing::{Dict, Game, Languages};
 
 use super::super::utils::uid::{recognize_starrail_server, recognize_region};
@@ -55,7 +56,7 @@ impl StarRailClient {
     /// Ref: https://github.com/Mar-7th
 
     #[cfg(feature = "mihomo")]
-    pub async fn get_preview_data(&self, uid: u32, lang: Option<&str>) -> Result<starrail::mihomo::Mihomo> {
+    pub async fn get_preview_data(&self, uid: u32, lang: Option<&str>) -> Result<mihomo::Mihomo> {
         let url = format!("https://api.mihomo.me/sr_info_parsed/{}?lang={}",
                               uid, lang.unwrap_or("en"));
 

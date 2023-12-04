@@ -69,6 +69,9 @@ pub struct Characters {
     pub skill_trees: Vec<SkillTrees>,
     pub light_cone: Option<LightCone>,
     pub relics: Vec<Relic>,
+    pub relic_sets: Vec<RelicSet>,
+    pub attributes: Vec<Attributes>,
+    pub additions: Vec<Addition>,
     pub properties: Vec<Properties>,
 }
 impl Characters {
@@ -83,6 +86,60 @@ impl Characters {
         };
 
         Ok(base)
+    }
+
+    /// GARBAGE CODE.
+    pub fn status_details(&self) -> Vec<StatusDetail> {
+        let mut attr = &self.attributes;
+        let mut addi = &self.additions;
+        let mut vec = vec![
+            StatusDetail::new(
+                "hp",
+                attr.iter().filter(|a| a.field.eq("hp")).next().unwrap(),
+                addi.iter().filter(|a| a.field.eq("hp")).next().unwrap(),
+            ),
+            StatusDetail::new(
+                "atk",
+                attr.iter().filter(|a| a.field.eq("atk")).next().unwrap(),
+                addi.iter().filter(|a| a.field.eq("atk")).next().unwrap()
+            ),
+            StatusDetail::new(
+                "def",
+                attr.iter().filter(|a| a.field.eq("def")).next().unwrap(),
+                addi.iter().filter(|a| a.field.eq("def")).next().unwrap()
+            ),
+            StatusDetail::new(
+                "spd",
+                attr.iter().filter(|a| a.field.eq("spd")).next().unwrap(),
+                addi.iter().filter(|a| a.field.eq("spd")).next().unwrap(),
+            ),
+            StatusDetail::new(
+                "crit_rate",
+                attr.iter().filter(|a| a.field.eq("crit_rate")).next().unwrap(),
+                addi.iter().filter(|a| a.field.eq("crit_rate")).next().unwrap(),
+            ),
+            StatusDetail::new(
+                "crit_dmg",
+                attr.iter().filter(|a| a.field.eq("crit_dmg")).next().unwrap(),
+                addi.iter().filter(|a| a.field.eq("crit_dmg")).next().unwrap(),
+            )
+        ];
+
+
+        vec
+    }
+}
+
+pub struct StatusDetail<'a> {
+    pub flag: String,
+    pub attr: &'a Attributes,
+    pub addi: &'a Addition
+}
+impl StatusDetail<'_> {
+    pub fn new<T: AsRef<String>>(flag: T, attr: &Attributes, addi: &Addition) -> Self {
+        Self {
+            flag, attr, addi
+        }
     }
 }
 
@@ -202,7 +259,7 @@ pub struct SubAffix {
 }
 
 #[derive(Debug, Deserialize)]
-pub struct RelicsSets {
+pub struct RelicSet {
     pub id: String,
     pub name: String,
     pub icon: String,
@@ -244,3 +301,13 @@ pub(crate) fn relic_deserialize() -> anyhow::Result<RelicsInfo> {
     Ok(x)
 }
 
+
+#[derive(Debug, Deserialize)]
+pub struct Addition {
+    pub field: String,
+    pub name: String,
+    pub icon: String,
+    pub value: f64,
+    pub display: String,
+    pub percent: bool
+}
