@@ -89,7 +89,7 @@ impl Characters {
         Ok(base)
     }
 
-    /// GARBAGE CODE.
+    // GARBAGE CODE.
     // pub fn status_details(&self) -> Vec<StatusDetail> {
     //     let mut attr = self.attributes.iter();
     //     let mut addi = self.additions.iter();
