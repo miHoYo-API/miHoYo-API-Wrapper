@@ -262,7 +262,7 @@ pub struct RelicSet {
     pub name: String,
     pub icon: String,
     pub num: u32,
-    pub desc: u32,
+    pub desc: String,
     pub properties: Vec<Properties>,
 }
 
