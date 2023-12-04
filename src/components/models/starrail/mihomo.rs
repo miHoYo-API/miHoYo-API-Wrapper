@@ -56,6 +56,7 @@ pub struct Characters {
     pub id: String,
     pub name: String,
     pub rarity: u32,
+    pub rank: u8,
     pub level: u32,
     pub promotion: u32,
     pub icon: String,

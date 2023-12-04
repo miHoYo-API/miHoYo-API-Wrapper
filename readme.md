@@ -3,8 +3,8 @@
     <img alt="Crates.io" src="https://img.shields.io/crates/d/miHoYo-API">
     <img alt="Crates.io (latest)" src="https://img.shields.io/crates/dv/miHoYo-API">
     <img alt="Crates.io (recent)" src="https://img.shields.io/crates/dr/miHoYo-API">
-    <img alt="Crates.io (version)" src="https://img.shields.io/crates/dv/miHoYo-API/0.1.7">
-    <br>
+
+[//]: # (    <img alt="Crates.io &#40;version&#41;" src="https://img.shields.io/crates/dv/miHoYo-API/0.2.">)
 </div>
 
 

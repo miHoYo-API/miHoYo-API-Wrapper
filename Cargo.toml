@@ -7,7 +7,7 @@ keywords = [ "mihoyo", "hoyoverse", "genshin", "starrail" ]
 license = "MIT"
 name = "miHoYo-API"
 repository = "https://github.com/miHoYo-API/miHoYo-API-Wrapper"
-version = "0.2.12"
+version = "0.2.13"
 
 
 [features]
@@ -34,7 +34,6 @@ itertools = "0.11.0"
 collecting-hashmap = "0.2.0"
 chrono = "0.4.31"
 unicode-segmentation = "1.10.1"
-
 
 [dependencies.serde]
 version = "1.0"

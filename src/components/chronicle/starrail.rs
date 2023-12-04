@@ -58,7 +58,11 @@ impl StarRailClient {
     pub async fn get_preview_data(&self, uid: u32, lang: Option<&str>) -> Result<starrail::mihomo::Mihomo> {
         let url = format!("https://api.mihomo.me/sr_info_parsed/{}?lang={}",
                               uid, lang.unwrap_or("en"));
-        let client = reqwest::Client::builder().build()?.request("GET".parse()?, url);
+
+        let client = reqwest::Client::builder()
+            .build()?.request("GET".parse()?, url);
+
+        // dbg!(self.0.request(client).await.unwrap().text().await.unwrap());
 
         let data = self.0.request(client).await?
             .json::<starrail::mihomo::Mihomo>()
