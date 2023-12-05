@@ -14,11 +14,9 @@ mod test {
     #[tokio::test]
     async fn it_works() -> anyhow::Result<()> {
         /// Initialize Client variable.
-        let mut client = Client::new();
-
         /// Setting for two cookies connect [Hoyolab](https://www.hoyolab.com/home).
         /// And another way to set,  you can use [`Client::set_cookies`]
-        client.set_from_env(None)?;
+        let mut client = Client::new().set_from_env(None)?;
 
         /// Getting [`crate::components::models::hoyolab::record::Account`] as elements in Vectors.
         let accounts = client.get_game_account(Some(Game::StarRail), None).await?;

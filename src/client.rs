@@ -40,7 +40,7 @@ impl Client {
 
 
     /// HELP: Someone tell me how to use as method chain without as_mut func
-    pub fn set_cookies(&mut self,  cookies: CookieType) -> anyhow::Result<&mut Self> {
+    pub fn set_cookies(mut self,  cookies: CookieType) -> anyhow::Result<Self> {
         use crate::components::managers::manager::{__parse_cookies, auto_cookie};
 
         let cookies = match cookies {
@@ -71,7 +71,7 @@ impl Client {
         Ok(self)
     }
 
-    pub fn set_from_env(&mut self, path: Option<&str>) -> anyhow::Result<&mut Self> {
+    pub fn set_from_env(mut self, path: Option<&str>) -> anyhow::Result<Self> {
         use std::env::var;
 
         match path {
