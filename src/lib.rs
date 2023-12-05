@@ -1,8 +1,7 @@
-pub mod typing;
 pub mod client;
-
-pub(crate) mod components;
-pub(crate) mod error;
+pub mod components;
+pub mod error;
+pub mod typing;
 
 
 #[cfg(test)]
@@ -10,15 +9,14 @@ mod test {
     use crate::client::Client;
     use crate::typing::{Game, Languages};
 
-
     #[tokio::test]
-    async fn it_works() -> anyhow::Result<()> {
+    async fn demo() -> anyhow::Result<()> {
         /// Initialize Client variable.
         /// Setting for two cookies connect [Hoyolab](https://www.hoyolab.com/home).
         /// And another way to set,  you can use [`Client::set_cookies`]
         let mut client = Client::new().set_from_env(None)?;
 
-        /// Getting [`crate::components::models::hoyolab::record::Account`] as elements in Vectors.
+        /// Getting [`crate::components::models::hoyolab::record::Account`] as elements in Vector.
         let accounts = client.get_game_account(Some(Game::StarRail), None).await?;
 
         /// Extract UID from account.
@@ -31,10 +29,10 @@ mod test {
 
         /// This [`crate::components::chronicle::starrail::StarRailClient::get_preview_data`] is only β.
         /// Getting as [`crate::components::models::starrail::mihomo::Mihomo`].
-        /// --About lang argument, Here's [corresponding string list]()--
-        /// I'm gonna create a enum of Language.
+        /// --About lang argument, Here's [corresponding string list](https://github.com/Mar-7th/mihomo.py/blob/master/mihomo/model.py#L8)--
+        /// I will create a enum of Language.
         let user_data = client.starrail.get_preview_data(account_id, Some("jp")).await.unwrap();
-        dbg!(user_data);
+        dbg!(&user_data);
 
         Ok(())
     }
