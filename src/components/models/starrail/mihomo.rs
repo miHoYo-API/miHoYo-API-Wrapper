@@ -1,22 +1,20 @@
 use std::fs::File;
-use std::borrow::Cow;
 use std::io::BufReader;
 use std::collections::HashMap;
 use anyhow::bail;
 use serde::Deserialize;
 use crate::typing::RelicType;
 
-
 type Info = HashMap<String, String>;
 
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 pub struct Mihomo {
     pub player: Player,
-    pub characters: Vec<Characters>,
+    pub characters: Vec<Character>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 pub struct Player {
     pub uid: String,
     pub nickname: String,
@@ -29,14 +27,14 @@ pub struct Player {
     pub space_info: SpaceInfo,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 pub struct Avatar {
     pub id: String,
     pub name: String,
     pub icon: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 pub struct SpaceInfo {
     pub challenge_data: ChallengeData,
     pub pass_area_progress: u32,
@@ -45,15 +43,15 @@ pub struct SpaceInfo {
     pub achievement_count: u32,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 pub struct ChallengeData {
     pub maze_group_id: u32,
     pub maze_group_index: u32,
     pub pre_maze_group_index: u32
 }
 
-#[derive(Debug, Deserialize)]
-pub struct Characters {
+#[derive(Debug, Clone, Deserialize)]
+pub struct Character {
     pub id: String,
     pub name: String,
     pub rarity: u32,
@@ -75,7 +73,7 @@ pub struct Characters {
     pub additions: Vec<Addition>,
     pub properties: Vec<Properties>,
 }
-impl Characters {
+impl Character {
     /// A set of [`types::RelicType`] and [`Relic`]
     pub fn collect_relics_with_type(&self) -> anyhow::Result<Vec<(RelicType, Relic)>> {
         let relic_info = relic_deserialize().unwrap();
@@ -141,14 +139,14 @@ impl Characters {
 //     }
 // }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 pub struct Path {
     pub id: String,
     pub name: String,
     pub icon: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 pub struct Element {
     pub id: String,
     pub name: String,
@@ -156,7 +154,7 @@ pub struct Element {
     pub icon: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 pub struct Skills {
     pub id: String,
     pub name: String,
@@ -172,7 +170,7 @@ pub struct Skills {
     pub icon: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 pub struct SkillTrees {
     pub id: String,
     pub level: u32,
@@ -182,7 +180,7 @@ pub struct SkillTrees {
     pub parent: Option<String>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 pub struct LightCone {
     pub id: String,
     pub name: String,
@@ -208,7 +206,7 @@ pub struct Attributes {
     pub percent: bool,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 pub struct Properties {
     pub r#type: String,
     pub field: String,
@@ -256,7 +254,7 @@ pub struct SubAffix {
     pub step: u32,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 pub struct RelicSet {
     pub id: String,
     pub name: String,
@@ -268,7 +266,7 @@ pub struct RelicSet {
 
 
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 pub(crate) struct RelicsInfo {
     pub(crate) thirty_thousand: Vec<Info>,
     pub(crate) forty_thousand: Vec<Info>,
