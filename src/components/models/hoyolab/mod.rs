@@ -1,1 +1,1 @@
-pub(crate) mod record;
+pub mod record;

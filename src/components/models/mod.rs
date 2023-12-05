@@ -1,5 +1,5 @@
-pub(crate) mod hoyolab;
-pub(crate) mod starrail;
+pub mod hoyolab;
+pub mod starrail;
 
 
 use serde::Deserialize;
